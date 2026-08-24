@@ -12,7 +12,6 @@
   --border-dim: #1f2937;
   --text: #ffffff;
   --text-dim: #9ca3af;
-  --text-dimmer: #6b7280;
   --screw: #45454e;
   --nav-height: 72px;
   --font-display: "Archivo Black", "Arial Black", sans-serif;
@@ -75,7 +74,8 @@ button {
 }
 
 /* Section anchor offset so the sticky nav never overlaps content ---------- */
-section[id] {
+section[id],
+#top {
   scroll-margin-top: calc(var(--nav-height) + 16px);
 }
 
@@ -503,7 +503,7 @@ p {
 
 .hero-photo-caption p {
   font-size: 13px;
-  color: var(--text-dimmer);
+  color: var(--text-dim);
 }
 
 /* ==========================================================================
@@ -667,7 +667,7 @@ p {
 }
 
 .module-row dt {
-  color: var(--text-dimmer);
+  color: var(--text-dim);
   letter-spacing: 0.02em;
 }
 
@@ -877,7 +877,7 @@ select {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--text-dimmer);
+  color: var(--text-dim);
 }
 
 .summary-total .value {
@@ -925,7 +925,7 @@ select {
   margin-top: 16px;
   font-size: 12px;
   letter-spacing: 0.06em;
-  color: var(--text-dimmer);
+  color: var(--text-dim);
   text-decoration: none;
 }
 
