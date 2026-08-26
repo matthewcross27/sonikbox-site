@@ -87,6 +87,7 @@
   var summaryAddons = document.getElementById("summary-addons");
   var summaryTotal = document.getElementById("summary-total");
   var estimatorSubmit = document.getElementById("estimator-submit");
+  var mobileTotalValue = document.getElementById("mobile-total-value");
 
   var currentHub = "la";
 
@@ -155,6 +156,9 @@
     summaryTravel.textContent = "$" + travel.toLocaleString();
     summaryAddons.textContent = "$" + addonsTotal.toLocaleString();
     summaryTotal.textContent = "$" + total.toLocaleString();
+    if (mobileTotalValue) {
+      mobileTotalValue.textContent = "$" + total.toLocaleString();
+    }
 
     return { hours: hours, base: base, travel: travel, addonsTotal: addonsTotal, addonLabels: addonLabels, total: total };
   }
@@ -183,6 +187,22 @@
     ];
     window.location.href = mailtoUrl(subject, bodyLines.join("\n"));
   });
+
+  // ---------------------------------------------------------------------
+  // Mobile sticky mini-total bar (shows while the estimator is in view;
+  // hidden above the 1024px breakpoint via CSS regardless of this state)
+  // ---------------------------------------------------------------------
+  var mobileTotalBar = document.getElementById("mobile-total-bar");
+  var estimatorPanel = document.querySelector("#estimator .estimator-panel");
+
+  if (mobileTotalBar && estimatorPanel && "IntersectionObserver" in window) {
+    var estimatorObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        mobileTotalBar.classList.toggle("is-visible", entry.isIntersecting);
+      });
+    });
+    estimatorObserver.observe(estimatorPanel);
+  }
 
   // ---------------------------------------------------------------------
   // Print Studio Rider
