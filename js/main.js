@@ -59,7 +59,30 @@
   // Session Rate Builder
   // ---------------------------------------------------------------------
   var HOURLY_RATE = 150;
-  var ENGINEER_RATE_PER_HOUR = 80;
+
+  // Single source of truth for add-ons. Price is declared once here and is read
+  // by the checkbox copy, the Module 05 spec card, the running total, and the
+  // booking email, so the page can never quote one number and charge another.
+  // billing "hourly" multiplies by tracking hours; "flat" is charged once.
+  var ADDONS = [
+    { id: "addon-engineer", name: "Grammy-vetted Tracking Engineer", price: 80, billing: "hourly", unit: "/hr" },
+    { id: "addon-autotune", name: "Antares Auto-Tune Hybrid Real-time Rig", price: 100, billing: "flat", unit: " flat" },
+    { id: "addon-mixdown", name: "Full Stereophonic Mixdown & Reference Master", price: 250, billing: "flat", unit: " / track" },
+    { id: "addon-dj-cdj", name: "Pioneer DJ CDJ-3000 (x2) & Pioneer DJ DJM-A9 Mixer", price: 150, billing: "flat", unit: " flat" },
+    { id: "addon-dj-xdj", name: "Pioneer DJ XDJ-RX3", price: 100, billing: "flat", unit: " flat" }
+  ];
+
+  function money(amount) {
+    return "$" + amount.toLocaleString();
+  }
+
+  function addonPriceCopy(addon) {
+    return "+" + money(addon.price) + addon.unit;
+  }
+
+  function addonAmount(addon, hours) {
+    return addon.billing === "hourly" ? addon.price * hours : addon.price;
+  }
 
   var RADIUS_OPTIONS = {
     la: [
@@ -79,9 +102,7 @@
   var hoursRange = document.getElementById("hours-range");
   var hoursValue = document.getElementById("hours-value");
   var radiusSelect = document.getElementById("radius-select");
-  var addonEngineer = document.getElementById("addon-engineer");
-  var addonAutotune = document.getElementById("addon-autotune");
-  var addonMixdown = document.getElementById("addon-mixdown");
+  var addonsContainer = document.getElementById("addons");
   var summaryBase = document.getElementById("summary-base");
   var summaryTravel = document.getElementById("summary-travel");
   var summaryAddons = document.getElementById("summary-addons");
@@ -90,6 +111,40 @@
   var mobileTotalValue = document.getElementById("mobile-total-value");
 
   var currentHub = "la";
+
+  // Render the add-on checkboxes and every price label from ADDONS.
+  function renderAddons() {
+    ADDONS.forEach(function (addon) {
+      var label = document.createElement("label");
+      label.className = "addon-option";
+
+      var input = document.createElement("input");
+      input.type = "checkbox";
+      input.id = addon.id;
+      input.value = String(addon.price);
+      input.addEventListener("change", recalculate);
+
+      var text = document.createElement("span");
+      var name = document.createElement("span");
+      name.className = "addon-name";
+      name.textContent = addon.name;
+      text.appendChild(name);
+      text.appendChild(document.createTextNode(" - " + addonPriceCopy(addon)));
+
+      label.appendChild(input);
+      label.appendChild(text);
+      addonsContainer.appendChild(label);
+      addon.input = input;
+    });
+
+    // Prices quoted on the Module 05 spec card come from the same table.
+    ADDONS.forEach(function (addon) {
+      var slot = document.querySelector('[data-addon-price="' + addon.id + '"]');
+      if (slot) {
+        slot.textContent = addonPriceCopy(addon);
+      }
+    });
+  }
 
   function populateRadiusOptions() {
     var previousIndex = radiusSelect.selectedIndex >= 0 ? radiusSelect.selectedIndex : 0;
@@ -137,27 +192,21 @@
 
     var addonsTotal = 0;
     var addonLabels = [];
-    if (addonEngineer.checked) {
-      addonsTotal += hours * ENGINEER_RATE_PER_HOUR;
-      addonLabels.push("Grammy-vetted Tracking Engineer");
-    }
-    if (addonAutotune.checked) {
-      addonsTotal += 100;
-      addonLabels.push("Antares Auto-Tune Hybrid Real-time Rig");
-    }
-    if (addonMixdown.checked) {
-      addonsTotal += 250;
-      addonLabels.push("Full Stereophonic Mixdown & Reference Master");
-    }
+    ADDONS.forEach(function (addon) {
+      if (addon.input && addon.input.checked) {
+        addonsTotal += addonAmount(addon, hours);
+        addonLabels.push(addon.name);
+      }
+    });
 
     var total = base + travel + addonsTotal;
 
-    summaryBase.textContent = "$" + base.toLocaleString();
-    summaryTravel.textContent = "$" + travel.toLocaleString();
-    summaryAddons.textContent = "$" + addonsTotal.toLocaleString();
-    summaryTotal.textContent = "$" + total.toLocaleString();
+    summaryBase.textContent = money(base);
+    summaryTravel.textContent = money(travel);
+    summaryAddons.textContent = money(addonsTotal);
+    summaryTotal.textContent = money(total);
     if (mobileTotalValue) {
-      mobileTotalValue.textContent = "$" + total.toLocaleString();
+      mobileTotalValue.textContent = money(total);
     }
 
     return { hours: hours, base: base, travel: travel, addonsTotal: addonsTotal, addonLabels: addonLabels, total: total };
@@ -165,10 +214,8 @@
 
   hoursRange.addEventListener("input", recalculate);
   radiusSelect.addEventListener("change", recalculate);
-  addonEngineer.addEventListener("change", recalculate);
-  addonAutotune.addEventListener("change", recalculate);
-  addonMixdown.addEventListener("change", recalculate);
 
+  renderAddons();
   populateRadiusOptions();
   recalculate();
 
@@ -180,7 +227,7 @@
       "Tracking hours: " + quote.hours + " hrs",
       "Location radius: " + currentRadiusLabel(),
       "Add-ons: " + (quote.addonLabels.length ? quote.addonLabels.join(", ") : "None"),
-      "Estimated total: $" + quote.total.toLocaleString(),
+      "Estimated total: " + money(quote.total),
       "",
       "Preferred date: ",
       "Project type: "

@@ -678,6 +678,62 @@ p {
   font-weight: 500;
 }
 
+/* Module 05 lists many items per row, so it spans the grid and stacks its
+   label above the value instead of the two-column label/value shape. */
+@media (min-width: 768px) {
+  .module-card-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+.module-row-stacked {
+  flex-direction: column;
+  gap: 6px;
+}
+
+.module-row-stacked dd {
+  text-align: left;
+}
+
+.row-tag {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.row-tag-included {
+  color: var(--text-dim);
+}
+
+.row-tag-addon {
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+.addon-line {
+  display: block;
+}
+
+.addon-line + .addon-line {
+  margin-top: 6px;
+}
+
+.addon-price {
+  color: var(--orange);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.addon-note {
+  color: var(--text-dim);
+  font-weight: 400;
+  margin-top: 8px;
+}
+
 /* ==========================================================================
    Estimator
    ========================================================================== */
@@ -1082,6 +1138,23 @@ select {
 
   .module-row dd {
     color: #000;
+  }
+
+  .module-card-wide {
+    grid-column: 1 / -1;
+  }
+
+  .row-tag {
+    border-color: #999;
+    color: #000 !important;
+  }
+
+  .addon-price {
+    color: #000;
+  }
+
+  .addon-note {
+    color: #444;
   }
 
   .eyebrow, h2, h3 {

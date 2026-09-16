@@ -154,7 +154,7 @@
               <div class="vu-meter no-print" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
             </div>
             <dl class="module-rows">
-              <div class="module-row"><dt>Main Reference Monitors</dt><dd>Focal Trio6 Be (Tri-Amplified Active)</dd></div>
+              <div class="module-row"><dt>Main Reference Monitors</dt><dd>KRK Rokit 7 (Powered Nearfield Pair)</dd></div>
               <div class="module-row"><dt>Nearfield Reference</dt><dd>Avantone Pro Active MixCubes</dd></div>
               <div class="module-row"><dt>Headphone Distribution</dt><dd>Dangerous Music SOURCE &amp; Audio-Technica M50x (x4)</dd></div>
               <div class="module-row"><dt>Room Tuning</dt><dd>Custom Vicoustic Diffusion &amp; Bass Trapping</dd></div>
@@ -182,8 +182,8 @@
             <dl class="module-rows">
               <div class="module-row"><dt>Vocal Flagship</dt><dd>Neumann U87 Ai Large-Diaphragm Condenser</dd></div>
               <div class="module-row"><dt>Multi-Pattern Condensers</dt><dd>AKG C414 XLII (Stereo Matched Pair)</dd></div>
-              <div class="module-row"><dt>Classic Ribbons</dt><dd>Royer R-121 (Incredible for high-SPL/Instruments)</dd></div>
-              <div class="module-row"><dt>Vocal / Broadcast Dynamics</dt><dd>Shure SM7B (x4), Electro-Voice RE20 (x2)</dd></div>
+              <div class="module-row"><dt>Tube Condenser</dt><dd>ADK A48</dd></div>
+              <div class="module-row"><dt>Vocal / Broadcast Dynamics</dt><dd>Shure SM7B (x1)</dd></div>
             </dl>
           </div>
 
@@ -193,9 +193,34 @@
               <div class="vu-meter no-print" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
             </div>
             <dl class="module-rows">
-              <div class="module-row"><dt>Power Delivery</dt><dd>Parallel Honda EU7000iS Inverters (Pure Sine Wave)</dd></div>
-              <div class="module-row"><dt>Battery Isolation</dt><dd>APC Smart-UPS Li-Ion 3000VA (Zero Audio Hum)</dd></div>
+              <div class="module-row"><dt>Power Delivery</dt><dd>Victron Quattro Inverter (120V / 60Hz) &amp; Backup Cummins Generator with Auto Start</dd></div>
+              <div class="module-row"><dt>Studio Isolation</dt><dd>Furman M8x2 Power Conditioner</dd></div>
               <div class="module-row"><dt>Network Connections</dt><dd>Starlink Mobility for Real-Time cloud tracking/collabs</dd></div>
+            </dl>
+          </div>
+
+          <div class="module-card module-card-wide rack-panel">
+            <div class="module-card-head">
+              <h3>Module 05 &mdash; Instrument &amp; Performance Locker</h3>
+              <div class="vu-meter no-print" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            </div>
+            <dl class="module-rows">
+              <div class="module-row module-row-stacked">
+                <dt>Synthesizers <span class="row-tag row-tag-included">Included</span></dt>
+                <dd>Moog Sub 37, Dave Smith Instruments Prophet &rsquo;08, Behringer DeepMind 12, Korg microKORG, Akai Professional MPK Mini</dd>
+              </div>
+              <div class="module-row module-row-stacked">
+                <dt>Drum Machines &amp; Pads <span class="row-tag row-tag-included">Included</span></dt>
+                <dd>Elektron Digitakt, Akai Professional APC64, Akai Professional MPD218</dd>
+              </div>
+              <div class="module-row module-row-stacked">
+                <dt>DJ Gear <span class="row-tag row-tag-addon">Paid add-on - not included</span></dt>
+                <dd>
+                  <span class="addon-line">Pioneer DJ CDJ-3000 (x2) &amp; Pioneer DJ DJM-A9 Mixer <span class="addon-price" data-addon-price="addon-dj-cdj"></span></span>
+                  <span class="addon-line">Pioneer DJ XDJ-RX3 <span class="addon-price" data-addon-price="addon-dj-xdj"></span></span>
+                  <span class="addon-line addon-note">Select DJ gear when booking your session.</span>
+                </dd>
+              </div>
             </dl>
           </div>
         </div>
@@ -238,20 +263,9 @@
 
               <div class="field-group">
                 <span class="field-label" id="addons-label">Add-Ons</span>
-                <div class="addons" role="group" aria-labelledby="addons-label">
-                  <label class="addon-option">
-                    <input type="checkbox" id="addon-engineer" value="80" />
-                    <span><span class="addon-name">Grammy-vetted Tracking Engineer</span> — +$80/hr</span>
-                  </label>
-                  <label class="addon-option">
-                    <input type="checkbox" id="addon-autotune" value="100" />
-                    <span><span class="addon-name">Antares Auto-Tune Hybrid Real-time Rig</span> — +$100 flat</span>
-                  </label>
-                  <label class="addon-option">
-                    <input type="checkbox" id="addon-mixdown" value="250" />
-                    <span><span class="addon-name">Full Stereophonic Mixdown &amp; Reference Master</span> — +$250 / track</span>
-                  </label>
-                </div>
+                <!-- Options are rendered by js/main.js from the single ADDONS table,
+                     so every add-on price is declared exactly once. -->
+                <div class="addons" id="addons" role="group" aria-labelledby="addons-label"></div>
               </div>
             </form>
 
