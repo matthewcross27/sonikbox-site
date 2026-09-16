@@ -60,24 +60,36 @@
   // ---------------------------------------------------------------------
   var HOURLY_RATE = 150;
 
-  // Single source of truth for add-ons. Price is declared once here and is read
-  // by the checkbox copy, the Module 05 spec card, the running total, and the
-  // booking email, so the page can never quote one number and charge another.
-  // billing "hourly" multiplies by tracking hours; "flat" is charged once.
+  // Add-on table for the estimator. billing "hourly" multiplies by tracking
+  // hours; "flat" is charged once. Entries without a price are the DJ gear the
+  // Module 05 spec card prints: that card declares the amount, and the amount
+  // and copy are read back below so the page cannot quote one number and
+  // charge another.
   var ADDONS = [
     { id: "addon-engineer", name: "Grammy-vetted Tracking Engineer", price: 80, billing: "hourly", unit: "/hr" },
     { id: "addon-autotune", name: "Antares Auto-Tune Hybrid Real-time Rig", price: 100, billing: "flat", unit: " flat" },
     { id: "addon-mixdown", name: "Full Stereophonic Mixdown & Reference Master", price: 250, billing: "flat", unit: " / track" },
-    { id: "addon-dj-cdj", name: "Pioneer DJ CDJ-3000 (x2) & Pioneer DJ DJM-A9 Mixer", price: 150, billing: "flat", unit: " flat" },
-    { id: "addon-dj-xdj", name: "Pioneer DJ XDJ-RX3", price: 100, billing: "flat", unit: " flat" }
-  ];
+    { id: "addon-dj-cdj", name: "Pioneer DJ CDJ-3000 (x2) & Pioneer DJ DJM-A9 Mixer", billing: "flat" },
+    { id: "addon-dj-xdj", name: "Pioneer DJ XDJ-RX3", billing: "flat" }
+  ].filter(function (addon) {
+    if (typeof addon.price === "number") {
+      return true;
+    }
+    var slot = document.querySelector('[data-addon-price="' + addon.id + '"]');
+    if (!slot) {
+      return false;
+    }
+    addon.price = Number(slot.getAttribute("data-addon-amount"));
+    addon.priceCopy = slot.textContent.trim();
+    return isFinite(addon.price);
+  });
 
   function money(amount) {
     return "$" + amount.toLocaleString();
   }
 
   function addonPriceCopy(addon) {
-    return "+" + money(addon.price) + addon.unit;
+    return addon.priceCopy || "+" + money(addon.price) + addon.unit;
   }
 
   function addonAmount(addon, hours) {
@@ -112,7 +124,7 @@
 
   var currentHub = "la";
 
-  // Render the add-on checkboxes and every price label from ADDONS.
+  // Render the add-on checkboxes and their price labels from ADDONS.
   function renderAddons() {
     ADDONS.forEach(function (addon) {
       var label = document.createElement("label");
@@ -135,14 +147,6 @@
       label.appendChild(text);
       addonsContainer.appendChild(label);
       addon.input = input;
-    });
-
-    // Prices quoted on the Module 05 spec card come from the same table.
-    ADDONS.forEach(function (addon) {
-      var slot = document.querySelector('[data-addon-price="' + addon.id + '"]');
-      if (slot) {
-        slot.textContent = addonPriceCopy(addon);
-      }
     });
   }
 

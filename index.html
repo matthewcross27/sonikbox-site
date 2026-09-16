@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SonikBox | Mobile Recording Studio — Los Angeles &amp; San Diego</title>
-  <meta name="description" content="SonikBox brings a fully decoupled, acoustically-treated recording studio to your door in LA or San Diego — Neve preamps, Neumann mics, Focal monitors. Configure a session and book by email." />
+  <meta name="description" content="SonikBox brings a fully decoupled, acoustically-treated recording studio to your door in LA or San Diego — Neve preamps and Neumann mics. Configure a session and book by email." />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="SonikBox" />
@@ -145,7 +145,7 @@
         </div>
 
         <p class="print-only" style="font-family: Georgia, serif; font-size: 22px; font-weight: bold;">SonikBox Studio Rider</p>
-        <p class="print-only print-subtitle">Identical gear manifest — both mobile hubs. Verified June 2026.</p>
+        <p class="print-only print-subtitle">Identical gear manifest — both mobile hubs.</p>
 
         <div class="module-grid">
           <div class="module-card rack-panel">
@@ -154,7 +154,7 @@
               <div class="vu-meter no-print" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
             </div>
             <dl class="module-rows">
-              <div class="module-row"><dt>Main Reference Monitors</dt><dd>KRK Rokit 7 (Powered Nearfield Pair)</dd></div>
+              <div class="module-row"><dt>Main Reference Monitors</dt><dd>KRK Rokit 7s</dd></div>
               <div class="module-row"><dt>Nearfield Reference</dt><dd>Avantone Pro Active MixCubes</dd></div>
               <div class="module-row"><dt>Headphone Distribution</dt><dd>Dangerous Music SOURCE &amp; Audio-Technica M50x (x4)</dd></div>
               <div class="module-row"><dt>Room Tuning</dt><dd>Custom Vicoustic Diffusion &amp; Bass Trapping</dd></div>
@@ -216,8 +216,10 @@
               <div class="module-row module-row-stacked">
                 <dt>DJ Gear <span class="row-tag row-tag-addon">Paid add-on - not included</span></dt>
                 <dd>
-                  <span class="addon-line">Pioneer DJ CDJ-3000 (x2) &amp; Pioneer DJ DJM-A9 Mixer <span class="addon-price" data-addon-price="addon-dj-cdj"></span></span>
-                  <span class="addon-line">Pioneer DJ XDJ-RX3 <span class="addon-price" data-addon-price="addon-dj-xdj"></span></span>
+                  <!-- These rows declare the DJ add-on prices for the whole page: the estimator
+                       reads data-addon-amount, so the visible text and the attribute must stay in step. -->
+                  <span class="addon-line">Pioneer DJ CDJ-3000 (x2) &amp; Pioneer DJ DJM-A9 Mixer <span class="addon-price" data-addon-price="addon-dj-cdj" data-addon-amount="150">+$150 flat</span></span>
+                  <span class="addon-line">Pioneer DJ XDJ-RX3 <span class="addon-price" data-addon-price="addon-dj-xdj" data-addon-amount="100">+$100 flat</span></span>
                   <span class="addon-line addon-note">Select DJ gear when booking your session.</span>
                 </dd>
               </div>
@@ -263,8 +265,8 @@
 
               <div class="field-group">
                 <span class="field-label" id="addons-label">Add-Ons</span>
-                <!-- Options are rendered by js/main.js from the single ADDONS table,
-                     so every add-on price is declared exactly once. -->
+                <!-- Options are rendered by js/main.js from the ADDONS table, which reads
+                     the DJ prices off the Module 05 card, so each price is declared once. -->
                 <div class="addons" id="addons" role="group" aria-labelledby="addons-label"></div>
               </div>
             </form>

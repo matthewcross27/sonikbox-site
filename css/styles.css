@@ -1140,10 +1140,6 @@ select {
     color: #000;
   }
 
-  .module-card-wide {
-    grid-column: 1 / -1;
-  }
-
   .row-tag {
     border-color: #999;
     color: #000 !important;
