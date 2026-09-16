@@ -63,13 +63,14 @@
   var AUTOTUNE_FLAT = 100;
   var MIXDOWN_FLAT = 250;
 
-  // The DJ add-ons are declared on the Module 05 spec card, which carries both
-  // the visible price and its amount. Read them back here so the estimator can
-  // never quote one number and charge another; a card row that has gone missing
-  // or lost its amount drops out rather than being offered at the wrong price.
+  // The Module 05 spec card declares the DJ add-ons: the gear name on the row,
+  // the visible price and its amount on the price slot. Read all three back
+  // here so the estimator can never name or charge something the card does not
+  // list; a row that has gone missing or lost a part of that declaration drops
+  // out rather than being offered wrongly.
   var ADDONS = [
-    { id: "addon-dj-cdj", name: "Pioneer DJ CDJ-3000 (x2) & Pioneer DJ DJM-A9 Mixer" },
-    { id: "addon-dj-xdj", name: "Pioneer DJ XDJ-RX3" }
+    { id: "addon-dj-cdj" },
+    { id: "addon-dj-xdj" }
   ].filter(function (addon) {
     var slot = document.querySelector('[data-addon-price="' + addon.id + '"]');
     if (!slot) {
@@ -77,7 +78,8 @@
     }
     addon.price = Number(slot.getAttribute("data-addon-amount"));
     addon.priceCopy = slot.textContent.trim();
-    return isFinite(addon.price) && addon.price > 0 && addon.priceCopy !== "";
+    addon.name = slot.parentNode.textContent.replace(slot.textContent, "").trim();
+    return isFinite(addon.price) && addon.price > 0 && addon.priceCopy !== "" && addon.name !== "";
   });
 
   function money(amount) {
@@ -131,7 +133,7 @@
       name.className = "addon-name";
       name.textContent = addon.name;
       text.appendChild(name);
-      text.appendChild(document.createTextNode(" - " + addon.priceCopy));
+      text.appendChild(document.createTextNode(" — " + addon.priceCopy));
 
       label.appendChild(input);
       label.appendChild(text);
