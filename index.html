@@ -265,9 +265,22 @@
 
               <div class="field-group">
                 <span class="field-label" id="addons-label">Add-Ons</span>
-                <!-- Options are rendered by js/main.js from the ADDONS table, which reads
-                     the DJ prices off the Module 05 card, so each price is declared once. -->
-                <div class="addons" id="addons" role="group" aria-labelledby="addons-label"></div>
+                <div class="addons" id="addons" role="group" aria-labelledby="addons-label">
+                  <label class="addon-option">
+                    <input type="checkbox" id="addon-engineer" />
+                    <span><span class="addon-name">Grammy-vetted Tracking Engineer</span> — +$80/hr</span>
+                  </label>
+                  <label class="addon-option">
+                    <input type="checkbox" id="addon-autotune" />
+                    <span><span class="addon-name">Antares Auto-Tune Hybrid Real-time Rig</span> — +$100 flat</span>
+                  </label>
+                  <label class="addon-option">
+                    <input type="checkbox" id="addon-mixdown" />
+                    <span><span class="addon-name">Full Stereophonic Mixdown &amp; Reference Master</span> — +$250 / track</span>
+                  </label>
+                  <!-- The DJ options are appended here by js/main.js, which reads their
+                       prices off the Module 05 card. -->
+                </div>
               </div>
             </form>
 

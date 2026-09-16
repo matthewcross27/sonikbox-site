@@ -59,41 +59,29 @@
   // Session Rate Builder
   // ---------------------------------------------------------------------
   var HOURLY_RATE = 150;
+  var ENGINEER_RATE_PER_HOUR = 80;
+  var AUTOTUNE_FLAT = 100;
+  var MIXDOWN_FLAT = 250;
 
-  // Add-on table for the estimator. billing "hourly" multiplies by tracking
-  // hours; "flat" is charged once. Entries without a price are the DJ gear the
-  // Module 05 spec card prints: that card declares the amount, and the amount
-  // and copy are read back below so the page cannot quote one number and
-  // charge another.
+  // The DJ add-ons are declared on the Module 05 spec card, which carries both
+  // the visible price and its amount. Read them back here so the estimator can
+  // never quote one number and charge another; a card row that has gone missing
+  // or lost its amount drops out rather than being offered at the wrong price.
   var ADDONS = [
-    { id: "addon-engineer", name: "Grammy-vetted Tracking Engineer", price: 80, billing: "hourly", unit: "/hr" },
-    { id: "addon-autotune", name: "Antares Auto-Tune Hybrid Real-time Rig", price: 100, billing: "flat", unit: " flat" },
-    { id: "addon-mixdown", name: "Full Stereophonic Mixdown & Reference Master", price: 250, billing: "flat", unit: " / track" },
-    { id: "addon-dj-cdj", name: "Pioneer DJ CDJ-3000 (x2) & Pioneer DJ DJM-A9 Mixer", billing: "flat" },
-    { id: "addon-dj-xdj", name: "Pioneer DJ XDJ-RX3", billing: "flat" }
+    { id: "addon-dj-cdj", name: "Pioneer DJ CDJ-3000 (x2) & Pioneer DJ DJM-A9 Mixer" },
+    { id: "addon-dj-xdj", name: "Pioneer DJ XDJ-RX3" }
   ].filter(function (addon) {
-    if (typeof addon.price === "number") {
-      return true;
-    }
     var slot = document.querySelector('[data-addon-price="' + addon.id + '"]');
     if (!slot) {
       return false;
     }
     addon.price = Number(slot.getAttribute("data-addon-amount"));
     addon.priceCopy = slot.textContent.trim();
-    return isFinite(addon.price);
+    return isFinite(addon.price) && addon.price > 0 && addon.priceCopy !== "";
   });
 
   function money(amount) {
     return "$" + amount.toLocaleString();
-  }
-
-  function addonPriceCopy(addon) {
-    return addon.priceCopy || "+" + money(addon.price) + addon.unit;
-  }
-
-  function addonAmount(addon, hours) {
-    return addon.billing === "hourly" ? addon.price * hours : addon.price;
   }
 
   var RADIUS_OPTIONS = {
@@ -115,6 +103,9 @@
   var hoursValue = document.getElementById("hours-value");
   var radiusSelect = document.getElementById("radius-select");
   var addonsContainer = document.getElementById("addons");
+  var addonEngineer = document.getElementById("addon-engineer");
+  var addonAutotune = document.getElementById("addon-autotune");
+  var addonMixdown = document.getElementById("addon-mixdown");
   var summaryBase = document.getElementById("summary-base");
   var summaryTravel = document.getElementById("summary-travel");
   var summaryAddons = document.getElementById("summary-addons");
@@ -124,7 +115,7 @@
 
   var currentHub = "la";
 
-  // Render the add-on checkboxes and their price labels from ADDONS.
+  // Append the DJ add-on checkboxes after the statically listed options.
   function renderAddons() {
     ADDONS.forEach(function (addon) {
       var label = document.createElement("label");
@@ -133,7 +124,6 @@
       var input = document.createElement("input");
       input.type = "checkbox";
       input.id = addon.id;
-      input.value = String(addon.price);
       input.addEventListener("change", recalculate);
 
       var text = document.createElement("span");
@@ -141,7 +131,7 @@
       name.className = "addon-name";
       name.textContent = addon.name;
       text.appendChild(name);
-      text.appendChild(document.createTextNode(" - " + addonPriceCopy(addon)));
+      text.appendChild(document.createTextNode(" - " + addon.priceCopy));
 
       label.appendChild(input);
       label.appendChild(text);
@@ -196,9 +186,21 @@
 
     var addonsTotal = 0;
     var addonLabels = [];
+    if (addonEngineer.checked) {
+      addonsTotal += hours * ENGINEER_RATE_PER_HOUR;
+      addonLabels.push("Grammy-vetted Tracking Engineer");
+    }
+    if (addonAutotune.checked) {
+      addonsTotal += AUTOTUNE_FLAT;
+      addonLabels.push("Antares Auto-Tune Hybrid Real-time Rig");
+    }
+    if (addonMixdown.checked) {
+      addonsTotal += MIXDOWN_FLAT;
+      addonLabels.push("Full Stereophonic Mixdown & Reference Master");
+    }
     ADDONS.forEach(function (addon) {
       if (addon.input && addon.input.checked) {
-        addonsTotal += addonAmount(addon, hours);
+        addonsTotal += addon.price;
         addonLabels.push(addon.name);
       }
     });
@@ -218,6 +220,9 @@
 
   hoursRange.addEventListener("input", recalculate);
   radiusSelect.addEventListener("change", recalculate);
+  addonEngineer.addEventListener("change", recalculate);
+  addonAutotune.addEventListener("change", recalculate);
+  addonMixdown.addEventListener("change", recalculate);
 
   renderAddons();
   populateRadiusOptions();
