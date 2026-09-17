@@ -60,6 +60,31 @@
   // ---------------------------------------------------------------------
   var HOURLY_RATE = 150;
   var ENGINEER_RATE_PER_HOUR = 80;
+  var AUTOTUNE_FLAT = 100;
+  var MIXDOWN_FLAT = 250;
+
+  // The Module 05 spec card declares the DJ add-ons: the gear name on the row,
+  // the visible price and its amount on the price slot. Read all three back
+  // here so the estimator can never name or charge something the card does not
+  // list; a row that has gone missing or lost a part of that declaration drops
+  // out rather than being offered wrongly.
+  var ADDONS = [
+    { id: "addon-dj-cdj" },
+    { id: "addon-dj-xdj" }
+  ].filter(function (addon) {
+    var slot = document.querySelector('[data-addon-price="' + addon.id + '"]');
+    if (!slot) {
+      return false;
+    }
+    addon.price = Number(slot.getAttribute("data-addon-amount"));
+    addon.priceCopy = slot.textContent.trim();
+    addon.name = slot.parentNode.textContent.replace(slot.textContent, "").trim();
+    return isFinite(addon.price) && addon.price > 0 && addon.priceCopy !== "" && addon.name !== "";
+  });
+
+  function money(amount) {
+    return "$" + amount.toLocaleString();
+  }
 
   var RADIUS_OPTIONS = {
     la: [
@@ -79,6 +104,7 @@
   var hoursRange = document.getElementById("hours-range");
   var hoursValue = document.getElementById("hours-value");
   var radiusSelect = document.getElementById("radius-select");
+  var addonsContainer = document.getElementById("addons");
   var addonEngineer = document.getElementById("addon-engineer");
   var addonAutotune = document.getElementById("addon-autotune");
   var addonMixdown = document.getElementById("addon-mixdown");
@@ -90,6 +116,31 @@
   var mobileTotalValue = document.getElementById("mobile-total-value");
 
   var currentHub = "la";
+
+  // Append the DJ add-on checkboxes after the statically listed options.
+  function renderAddons() {
+    ADDONS.forEach(function (addon) {
+      var label = document.createElement("label");
+      label.className = "addon-option";
+
+      var input = document.createElement("input");
+      input.type = "checkbox";
+      input.id = addon.id;
+      input.addEventListener("change", recalculate);
+
+      var text = document.createElement("span");
+      var name = document.createElement("span");
+      name.className = "addon-name";
+      name.textContent = addon.name;
+      text.appendChild(name);
+      text.appendChild(document.createTextNode(" — " + addon.priceCopy));
+
+      label.appendChild(input);
+      label.appendChild(text);
+      addonsContainer.appendChild(label);
+      addon.input = input;
+    });
+  }
 
   function populateRadiusOptions() {
     var previousIndex = radiusSelect.selectedIndex >= 0 ? radiusSelect.selectedIndex : 0;
@@ -142,22 +193,28 @@
       addonLabels.push("Grammy-vetted Tracking Engineer");
     }
     if (addonAutotune.checked) {
-      addonsTotal += 100;
+      addonsTotal += AUTOTUNE_FLAT;
       addonLabels.push("Antares Auto-Tune Hybrid Real-time Rig");
     }
     if (addonMixdown.checked) {
-      addonsTotal += 250;
+      addonsTotal += MIXDOWN_FLAT;
       addonLabels.push("Full Stereophonic Mixdown & Reference Master");
     }
+    ADDONS.forEach(function (addon) {
+      if (addon.input && addon.input.checked) {
+        addonsTotal += addon.price;
+        addonLabels.push(addon.name);
+      }
+    });
 
     var total = base + travel + addonsTotal;
 
-    summaryBase.textContent = "$" + base.toLocaleString();
-    summaryTravel.textContent = "$" + travel.toLocaleString();
-    summaryAddons.textContent = "$" + addonsTotal.toLocaleString();
-    summaryTotal.textContent = "$" + total.toLocaleString();
+    summaryBase.textContent = money(base);
+    summaryTravel.textContent = money(travel);
+    summaryAddons.textContent = money(addonsTotal);
+    summaryTotal.textContent = money(total);
     if (mobileTotalValue) {
-      mobileTotalValue.textContent = "$" + total.toLocaleString();
+      mobileTotalValue.textContent = money(total);
     }
 
     return { hours: hours, base: base, travel: travel, addonsTotal: addonsTotal, addonLabels: addonLabels, total: total };
@@ -169,6 +226,7 @@
   addonAutotune.addEventListener("change", recalculate);
   addonMixdown.addEventListener("change", recalculate);
 
+  renderAddons();
   populateRadiusOptions();
   recalculate();
 
@@ -180,7 +238,7 @@
       "Tracking hours: " + quote.hours + " hrs",
       "Location radius: " + currentRadiusLabel(),
       "Add-ons: " + (quote.addonLabels.length ? quote.addonLabels.join(", ") : "None"),
-      "Estimated total: $" + quote.total.toLocaleString(),
+      "Estimated total: " + money(quote.total),
       "",
       "Preferred date: ",
       "Project type: "
