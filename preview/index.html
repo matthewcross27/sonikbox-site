@@ -86,7 +86,7 @@
   <span class="stamp">Temporary preview</span>
   <span class="note">Not part of the site. Delete <code>preview/</code> to remove it.</span>
   <div class="options" id="options" role="group" aria-label="Visual direction"></div>
-  <span class="kbd">keys 0-3</span>
+  <span class="kbd">keys 0-4</span>
 </div>
 
 <iframe id="stage" title="SonikBox site preview" src="../index.html"></iframe>
@@ -99,7 +99,8 @@
     { key: "default", label: "Default", blurb: "as it ships today" },
     { key: "signal", label: "A / Signal", blurb: "orange as ground, not accent" },
     { key: "1u", label: "B / 1U", blurb: "machined rack, orange as indicator only" },
-    { key: "rider", label: "C / Rider", blurb: "the printed rider, on screen" }
+    { key: "rider", label: "C / Rider", blurb: "the printed rider, on screen" },
+    { key: "rider-black", label: "D / Rider on black", blurb: "C's feel, black base, orange blocks" }
   ];
 
   var stage = document.getElementById("stage");
@@ -118,7 +119,11 @@
   // document. The site's own files are never touched.
   function apply() {
     var doc = stage.contentDocument;
-    if (!doc || !doc.head) { return; }
+    // Before the framed document commits, contentDocument is the initial
+    // about:blank, which inherits THIS page's base URL. Injecting there both
+    // resolves the sheet against /preview/ (a 404) and gets thrown away a
+    // moment later, so wait for the real document.
+    if (!doc || !doc.head || doc.URL === "about:blank") { return; }
     var link = doc.getElementById("preview-direction");
     if (current === "default") {
       if (link) { link.remove(); }
@@ -129,8 +134,10 @@
         link.rel = "stylesheet";
         doc.head.appendChild(link);
       }
-      // Cache-bust: these sheets are edited live while the captain watches.
-      link.setAttribute("href", "preview/direction-" + current + ".css?t=" + Date.now());
+      // Resolved against this page rather than the framed one, so it is correct
+      // wherever the directory is mounted. Cache-busted because these sheets
+      // are edited live while the captain watches.
+      link.setAttribute("href", new URL("direction-" + current + ".css?t=" + Date.now(), location.href).href);
     }
     [].forEach.call(options.children, function (btn) {
       btn.setAttribute("aria-pressed", String(btn.dataset.key === current));
@@ -154,7 +161,7 @@
   stage.addEventListener("load", apply);
   window.addEventListener("hashchange", function () { current = fromHash(); apply(); });
   document.addEventListener("keydown", function (e) {
-    var i = "0123".indexOf(e.key);
+    var i = "01234".indexOf(e.key);
     if (i >= 0 && !e.metaKey && !e.ctrlKey && !e.altKey) {
       current = DIRECTIONS[i].key;
       history.replaceState(null, "", "#" + current);
