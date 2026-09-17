@@ -18,6 +18,10 @@
     navToggle.setAttribute("aria-expanded", "false");
   }
 
+  function navIsOpen() {
+    return navPanel.classList.contains("is-open");
+  }
+
   navToggle.addEventListener("click", function () {
     var isOpen = navPanel.classList.toggle("is-open");
     navToggle.setAttribute("aria-expanded", String(isOpen));
@@ -30,13 +34,14 @@
   });
 
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
+    if (event.key === "Escape" && navIsOpen()) {
       closeNav();
+      navToggle.focus();
     }
   });
 
   window.addEventListener("resize", function () {
-    if (window.innerWidth >= 768) {
+    if (window.innerWidth >= 768 && navIsOpen()) {
       closeNav();
     }
   });
@@ -179,9 +184,17 @@
     return opt.label;
   }
 
+  function updateRangeFill() {
+    var min = Number(hoursRange.min);
+    var max = Number(hoursRange.max);
+    var pct = max > min ? ((Number(hoursRange.value) - min) / (max - min)) * 100 : 0;
+    hoursRange.style.setProperty("--range-fill", pct + "%");
+  }
+
   function recalculate() {
     var hours = parseInt(hoursRange.value, 10);
     hoursValue.textContent = hours + " hrs";
+    updateRangeFill();
 
     var base = hours * HOURLY_RATE;
     var travel = currentRadiusFee();
