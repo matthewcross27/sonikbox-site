@@ -93,14 +93,14 @@
 
   var RADIUS_OPTIONS = {
     la: [
-      { value: "0", fee: 0, label: "Metro LA & Hollywood — Within 15 mi (Free)" },
-      { value: "150", fee: 150, label: "Greater LA County / Valley — 15–40 mi (+$150 Travel Fee)" },
-      { value: "300", fee: 300, label: "Out-of-Bounds — Malibu, Desert, Ventura (+$300 Travel Fee)" }
+      { value: "0", fee: 0, label: "Metro LA & Hollywood - Within 15 mi (Free)" },
+      { value: "150", fee: 150, label: "Greater LA County / Valley - 15–40 mi (+$150 Travel Fee)" },
+      { value: "300", fee: 300, label: "Out-of-Bounds - Malibu, Desert, Ventura (+$300 Travel Fee)" }
     ],
     sd: [
-      { value: "0", fee: 0, label: "Downtown, Gaslamp & Mission Valley — Within 15 mi (Free)" },
-      { value: "150", fee: 150, label: "North County / Oceanside / East County — 15–40 mi (+$150 Travel Fee)" },
-      { value: "300", fee: 300, label: "Extended Tracks — Temecula, Imperial Valley (+$300 Travel Fee)" }
+      { value: "0", fee: 0, label: "Downtown, Gaslamp & Mission Valley - Within 15 mi (Free)" },
+      { value: "150", fee: 150, label: "North County / Oceanside / East County - 15–40 mi (+$150 Travel Fee)" },
+      { value: "300", fee: 300, label: "Extended Tracks - Temecula, Imperial Valley (+$300 Travel Fee)" }
     ]
   };
 
@@ -138,7 +138,7 @@
       name.className = "addon-name";
       name.textContent = addon.name;
       text.appendChild(name);
-      text.appendChild(document.createTextNode(" — " + addon.priceCopy));
+      text.appendChild(document.createTextNode(" - " + addon.priceCopy));
 
       label.appendChild(input);
       label.appendChild(text);
@@ -245,11 +245,11 @@
 
   estimatorSubmit.addEventListener("click", function () {
     var quote = recalculate();
-    var subject = "Session Inquiry — Studio Lockout Request";
+    var subject = "Session Estimate";
     var bodyLines = [
       "Hub: " + currentHubLabel(),
       "Tracking hours: " + quote.hours + " hrs",
-      "Location radius: " + currentRadiusLabel(),
+      "Distance from hub: " + currentRadiusLabel(),
       "Add-ons: " + (quote.addonLabels.length ? quote.addonLabels.join(", ") : "None"),
       "Estimated total: " + money(quote.total),
       "",
