@@ -1,0 +1,148 @@
+/* ==========================================================================
+   DIRECTION A — "SIGNAL"
+   Temporary preview override. Loaded only by preview/index.html.
+
+   Colour strategy: drenched. Orange stops being a 5% accent and becomes a
+   ground. The page alternates between two extreme states as you scroll, the
+   way a signal alternates between rails: black fold, orange fold, black fold.
+   Inside an orange fold every brand role inverts, so the accent colour there
+   is black. Reference point: the Klim Type Foundry orange drench, not a
+   SaaS page with an orange button.
+   ========================================================================== */
+
+/* Every orange-ground fold redefines the palette for its whole subtree.
+   The base stylesheet reads these tokens everywhere, so the inversion
+   reaches panels, LEDs, meters, borders and buttons without restating them. */
+#hubs,
+#estimator,
+.cta-band {
+  --bg: #ff5500;
+  --panel: #ff5500;
+  --panel-raised: rgba(10, 7, 4, 0.07);
+  --border: rgba(10, 7, 4, 0.62);
+  --border-dim: rgba(10, 7, 4, 0.22);
+  --text: #0a0704;
+  --text-dim: #241708;
+  --orange: #0a0704;
+  --orange-hover: #2a1d12;
+  --orange-dim: rgba(10, 7, 4, 0.45);
+
+  /* Native checkboxes and the select popup are drawn by the platform; on an
+     orange ground they belong to the light scheme, not the dark one. */
+  color-scheme: light;
+  color: var(--text-dim);
+  background: #ff5500;
+  border-bottom: none;
+}
+
+/* No rules between folds. A 100% colour change is already the hardest edge
+   available; a keyline on top of it only muddies it. */
+.hero,
+#specs {
+  border-bottom: none;
+}
+
+/* Screw heads read as punched holes on orange and as machined studs on black. */
+#hubs .rack-panel,
+#estimator .rack-panel,
+.cta-band .rack-panel {
+  background-image:
+    radial-gradient(circle at 35% 35%, rgba(10, 7, 4, 0.75), rgba(10, 7, 4, 0.35) 70%),
+    radial-gradient(circle at 35% 35%, rgba(10, 7, 4, 0.75), rgba(10, 7, 4, 0.35) 70%),
+    radial-gradient(circle at 35% 35%, rgba(10, 7, 4, 0.75), rgba(10, 7, 4, 0.35) 70%),
+    radial-gradient(circle at 35% 35%, rgba(10, 7, 4, 0.75), rgba(10, 7, 4, 0.35) 70%);
+}
+
+#hubs .led,
+#estimator .led,
+.cta-band .led {
+  box-shadow: none;
+}
+
+/* On orange, a panel is defined by its outline, not by a lighter fill. */
+#hubs .rack-panel,
+#estimator .estimator-panel,
+.cta-band .cta-module {
+  border-width: 2px;
+}
+
+#estimator .summary-panel {
+  color-scheme: dark;
+  background-color: #0a0704;
+  color: #d9812f;
+  --text: #ff5500;
+  --text-dim: #d9812f;
+  --border: rgba(255, 85, 0, 0.45);
+  --border-dim: rgba(255, 85, 0, 0.25);
+  --orange: #ff5500;
+  --panel-raised: #17100a;
+}
+
+#estimator .summary-panel .btn-primary {
+  background: #ff5500;
+  color: #0a0704;
+  border-color: #ff5500;
+}
+
+.cta-band .cta-module {
+  box-shadow: none;
+}
+
+/* The one moment the page shouts. Black slab, orange type, full stop. */
+.cta-band .cta-module {
+  color-scheme: dark;
+  background-color: #0a0704;
+  color: #e8944a;
+  --text: #ff5500;
+  --text-dim: #e8944a;
+  --orange: #ff5500;
+  --border: rgba(255, 85, 0, 0.5);
+}
+
+.cta-band .cta-module .btn-primary {
+  background: #ff5500;
+  color: #0a0704;
+  border-color: #ff5500;
+}
+
+.cta-band .cta-module .rack-panel,
+.cta-band .cta-module {
+  background-image:
+    radial-gradient(circle at 35% 35%, #ff5500, #7a2900 70%),
+    radial-gradient(circle at 35% 35%, #ff5500, #7a2900 70%),
+    radial-gradient(circle at 35% 35%, #ff5500, #7a2900 70%),
+    radial-gradient(circle at 35% 35%, #ff5500, #7a2900 70%);
+}
+
+/* Photographs sit on orange as hard-edged cut-outs. */
+#hubs .hub-photo-frame {
+  border: 2px solid #0a0704;
+}
+
+/* Type carries the same commitment: bigger, tighter, no timid steps. */
+:root {
+  --fs-h1: clamp(38px, 8vw, 84px);
+  --fs-h2: clamp(30px, 5.5vw, 52px);
+}
+
+h1, h2 {
+  letter-spacing: -0.035em;
+}
+
+.hero h1 .accent {
+  color: var(--orange);
+}
+
+.eyebrow {
+  font-weight: 700;
+  letter-spacing: 0.24em;
+}
+
+.site-footer {
+  background-color: #0a0704;
+}
+
+.mobile-total-bar {
+  background-color: #0a0704;
+  border-top: 2px solid #ff5500;
+}

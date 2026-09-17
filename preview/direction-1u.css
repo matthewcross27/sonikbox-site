@@ -1,0 +1,234 @@
+/* ==========================================================================
+   DIRECTION B — "1U"
+   Temporary preview override. Loaded only by preview/index.html.
+
+   Colour strategy: restrained. Orange drops below 5% of the surface and is
+   spent only where a real console spends it: status LEDs, meter segments, the
+   one button that commits you, and the add-on you have switched on. Everything
+   else is machined metal. The rack-panel metaphor stops being decoration on a
+   website and becomes the whole object, down to the rails in the margins and
+   rows that sit on a fixed rack unit.
+   ========================================================================== */
+
+:root {
+  --bg: #0b0b0d;
+  --panel: #131317;
+  --panel-raised: #1b1b20;
+  --border: #33333b;
+  --border-dim: #232329;
+  --text: #e9e8ec;
+  --text-dim: #93919a;
+
+  /* One rack unit. Every spec row is cut to it. */
+  --u: 46px;
+  --rail: 26px;
+}
+
+/* Panels are milled faces, not flat fills: a light top edge, a shadowed
+   bottom, and a faint vertical brush down the middle. */
+.rack-panel {
+  border-width: 2px;
+  background-color: var(--panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+}
+
+.rack-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent 38%, rgba(0, 0, 0, 0.25));
+}
+
+.rack-panel > * {
+  position: relative;
+}
+
+/* Rack rails down both margins, with punched mounting holes. Hidden below the
+   width where the margins stop being wide enough to hold them. */
+@media (min-width: 1240px) {
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    top: var(--nav-height);
+    bottom: 0;
+    width: var(--rail);
+    z-index: 1;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(
+        180deg,
+        transparent 0 14px,
+        rgba(0, 0, 0, 0.85) 14px 22px,
+        transparent 22px 44px
+      ),
+      linear-gradient(90deg, #1a1a1f, #26262d 45%, #121216);
+    border-right: 1px solid #000;
+    border-left: 1px solid #000;
+  }
+
+  body::before { left: 0; }
+  body::after { right: 0; }
+}
+
+/* Headings are engraved into the face rather than printed on it. */
+h1, h2, h3 {
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75);
+}
+
+/* Orange is an indicator, so it stops being the colour of every label. */
+.eyebrow,
+.hub-card-label {
+  color: var(--text);
+  letter-spacing: 0.2em;
+}
+
+.hero h1 .accent {
+  color: #8a8790;
+}
+
+.addon-price,
+.range-value,
+.summary-total .value,
+.mobile-total-value {
+  color: var(--text);
+}
+
+.cta-address:hover,
+.cta-address:focus-visible {
+  color: var(--text);
+}
+
+/* Indicators keep the orange, and gain the glow a real LED has behind a
+   panel cut-out. */
+.led {
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 6px 2px rgba(255, 85, 0, 0.55), inset 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.vu-meter {
+  height: 18px;
+  gap: 3px;
+  padding: 2px 3px;
+  background: #08080a;
+  border: 1px solid #000;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.9);
+}
+
+.vu-meter span {
+  width: 4px;
+}
+
+/* A module head is a screen-printed strip across the face. */
+.module-card-head {
+  margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-5);
+  padding: var(--space-4) var(--space-6);
+  background: #0c0c0f;
+  border-bottom: 2px solid #000;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  align-items: center;
+}
+
+/* Every spec row is one rack unit tall, so the card reads as a stack of
+   identical bays rather than as text of varying length. */
+@media (min-width: 560px) {
+  .module-row:not(.module-row-stacked) {
+    min-height: var(--u);
+    align-items: center;
+    padding: var(--space-2) 0;
+  }
+}
+
+.module-row dt {
+  color: var(--text-dim);
+  text-transform: uppercase;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.12em;
+}
+
+.module-row dd {
+  font-weight: 600;
+}
+
+/* Controls are hardware: recessed, hard-edged, positive. */
+.hub-toggle button,
+select,
+.addon-option {
+  border-width: 2px;
+  background-color: #0e0e11;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.hub-toggle button[aria-pressed="true"] {
+  background-color: #17171c;
+  box-shadow: inset 0 0 0 1px var(--orange), inset 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.btn {
+  border-width: 2px;
+}
+
+.btn-secondary {
+  background-color: #14141a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.summary-total .value {
+  /* The one number that matters gets the counter treatment: recessed window,
+     not a coloured headline. */
+  background: #08080a;
+  border: 2px solid #000;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.9);
+  padding: 2px var(--space-3);
+  color: var(--orange);
+}
+
+.site-nav {
+  border-bottom: 2px solid #000;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.section,
+.hero {
+  border-bottom: 2px solid #000;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.cta-module {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* The face overlay would otherwise dim the screw heads, and in this direction
+   the screws are the point. */
+.rack-panel {
+  background-image:
+    radial-gradient(circle at 34% 32%, #8d8d99, #2b2b32 62%, #0a0a0c 100%),
+    radial-gradient(circle at 34% 32%, #8d8d99, #2b2b32 62%, #0a0a0c 100%),
+    radial-gradient(circle at 34% 32%, #8d8d99, #2b2b32 62%, #0a0a0c 100%),
+    radial-gradient(circle at 34% 32%, #8d8d99, #2b2b32 62%, #0a0a0c 100%);
+  background-size: 9px 9px;
+  background-position:
+    11px 11px,
+    calc(100% - 11px) 11px,
+    11px calc(100% - 11px),
+    calc(100% - 11px) calc(100% - 11px);
+}
+
+.rack-panel::before {
+  /* Keep the brush, drop it out of the corners so the screws stay bright. */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 40%, rgba(0, 0, 0, 0.3));
+  mask-image:
+    linear-gradient(#000, #000),
+    radial-gradient(circle at 11px 11px, transparent 9px, #000 9px),
+    radial-gradient(circle at calc(100% - 11px) 11px, transparent 9px, #000 9px),
+    radial-gradient(circle at 11px calc(100% - 11px), transparent 9px, #000 9px),
+    radial-gradient(circle at calc(100% - 11px) calc(100% - 11px), transparent 9px, #000 9px);
+  mask-composite: intersect;
+}
