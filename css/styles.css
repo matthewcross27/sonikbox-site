@@ -75,7 +75,8 @@ body {
   color: var(--text-dim);
   font-family: var(--font-mono);
   font-size: var(--fs-body);
-  line-height: 1.6;
+  /* Long leading: this page is read, not scanned. */
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -124,16 +125,39 @@ p {
   margin: 0;
 }
 
+.module-row dt,
+.field-label,
+.summary-line > span:first-child,
+.summary-total .label,
+.hub-card-label,
+.mobile-total-label {
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Orange is fill, never type. The eyebrow carries an orange rule instead of
+   orange lettering; the same swap runs through the rest of the sheet. */
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  color: var(--orange);
+  gap: var(--space-3);
+  color: var(--text);
   font-size: var(--fs-spec);
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-weight: 700;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   margin-bottom: var(--space-3);
+}
+
+.eyebrow::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 64px;
+  height: 6px;
+  background: var(--orange);
 }
 
 .visually-hidden {
@@ -179,10 +203,10 @@ p {
   background-color: var(--panel);
   border: 1px solid var(--border);
   background-image:
-    radial-gradient(circle at 35% 35%, #55555f, #232328 70%),
-    radial-gradient(circle at 35% 35%, #55555f, #232328 70%),
-    radial-gradient(circle at 35% 35%, #55555f, #232328 70%),
-    radial-gradient(circle at 35% 35%, #55555f, #232328 70%);
+    radial-gradient(circle at 35% 35%, #3a3a42, #1c1c21 70%),
+    radial-gradient(circle at 35% 35%, #3a3a42, #1c1c21 70%),
+    radial-gradient(circle at 35% 35%, #3a3a42, #1c1c21 70%),
+    radial-gradient(circle at 35% 35%, #3a3a42, #1c1c21 70%);
   background-repeat: no-repeat;
   background-size: 7px 7px;
   background-position:
@@ -525,17 +549,24 @@ p {
 
 .hero h1 {
   font-size: var(--fs-h1);
+  /* The highlight blocks below need room between lines. */
+  line-height: 1.24;
   margin-bottom: var(--space-5);
 }
 
+/* Set IN the orange rather than coloured by it. */
 .hero h1 .accent {
-  color: var(--orange);
-  display: block;
+  display: inline;
+  color: var(--bg);
+  background: var(--orange);
+  box-shadow: 0.18em 0 0 var(--orange), -0.18em 0 0 var(--orange);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 .hero-body {
   font-size: var(--fs-body);
-  max-width: 52ch;
+  max-width: 58ch;
   margin-bottom: var(--space-8);
 }
 
@@ -611,8 +642,8 @@ p {
 }
 
 .section-head {
-  margin-bottom: var(--space-10);
-  max-width: 68ch;
+  margin-bottom: var(--space-12);
+  max-width: 62ch;
 }
 
 .section-head h2,
@@ -631,7 +662,7 @@ p {
   gap: var(--space-6);
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--space-12);
 }
 
 .section-head-row .section-head {
@@ -677,11 +708,7 @@ p {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  color: var(--orange);
-  font-size: var(--fs-label);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  color: var(--text);
   margin-bottom: var(--space-2);
 }
 
@@ -716,7 +743,7 @@ p {
 
 .module-grid {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-6);
 }
 
 @media (min-width: 768px) {
@@ -726,17 +753,25 @@ p {
 }
 
 .module-card {
-  padding: var(--space-6);
+  padding: var(--space-6) var(--space-6) var(--space-5);
 }
 
 .module-card-head {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-3);
-  margin-bottom: var(--space-5);
-  padding-bottom: var(--space-5);
-  border-bottom: 1px solid var(--border-dim);
+  margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-5);
+  padding: var(--space-4) var(--space-6);
+  background: var(--orange);
+}
+
+.module-card-head h3 {
+  color: var(--bg);
+}
+
+.module-card-head .vu-meter span {
+  background: var(--bg);
 }
 
 .module-card-head h3 {
@@ -759,8 +794,9 @@ p {
 .module-row {
   display: grid;
   gap: var(--space-1);
-  padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--border-dim);
+  padding: var(--space-4) 0;
+  /* Rules are how a document separates rows. Present, not apologetic. */
+  border-bottom: 1px solid var(--border);
   font-size: var(--fs-spec);
 }
 
@@ -785,15 +821,11 @@ p {
   padding-bottom: 0;
 }
 
-.module-row dt {
-  color: var(--text-dim);
-  letter-spacing: 0.02em;
-}
-
 .module-row dd {
   margin: 0;
   color: var(--text);
-  font-weight: 500;
+  font-size: var(--fs-spec);
+  font-weight: 600;
 }
 
 /* Module 05 lists many items per row, so it spans the grid and stacks its
@@ -824,8 +856,10 @@ p {
 }
 
 .row-tag-addon {
-  color: var(--orange);
+  background: var(--orange);
+  color: var(--bg);
   border-color: var(--orange);
+  font-weight: 700;
 }
 
 .addon-line {
@@ -841,7 +875,7 @@ p {
 }
 
 .addon-price {
-  color: var(--orange);
+  color: var(--text);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -887,11 +921,6 @@ p {
 
 .field-label {
   display: block;
-  font-size: var(--fs-label);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text);
   margin-bottom: var(--space-3);
 }
 
@@ -922,9 +951,9 @@ p {
 }
 
 .hub-toggle button[aria-pressed="true"] {
+  background: var(--orange);
   border-color: var(--orange);
-  color: var(--text);
-  box-shadow: inset 0 0 0 1px var(--orange);
+  color: var(--bg);
 }
 
 .range-row {
@@ -984,7 +1013,7 @@ input[type="range"]::-moz-range-thumb {
   font-family: var(--font-mono);
   font-size: var(--fs-body);
   font-weight: 600;
-  color: var(--orange);
+  color: var(--text);
   min-width: 6ch;
   text-align: right;
 }
@@ -1031,11 +1060,19 @@ select {
   border-color: var(--orange-dim);
 }
 
-/* A ticked add-on changes the total, so it needs to read as selected from
-   more than a 16px checkbox. */
+/* A ticked add-on changes the total, so it fills rather than tints. */
 .addon-option:has(input:checked) {
+  background: var(--orange);
   border-color: var(--orange);
-  background: rgba(255, 85, 0, 0.06);
+  color: var(--bg);
+}
+
+.addon-option:has(input:checked) .addon-name {
+  color: var(--bg);
+}
+
+.addon-option:has(input:checked) input {
+  accent-color: var(--bg);
 }
 
 .addon-option input {
@@ -1081,6 +1118,15 @@ select {
   color: var(--text-dim);
 }
 
+.summary-line + .summary-line {
+  border-top: 1px solid var(--border-dim);
+}
+
+.summary-line > span:last-child {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .summary-total {
   margin-top: var(--space-3);
   padding-top: var(--space-4);
@@ -1088,23 +1134,18 @@ select {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: var(--space-2) var(--space-4);
 }
 
-.summary-total .label {
-  font-size: var(--fs-label);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
+/* One stamped figure, not a page of orange numbers. */
 .summary-total .value {
   font-family: var(--font-display);
   font-size: 32px;
   letter-spacing: -0.02em;
-  color: var(--orange);
+  color: var(--bg);
+  background: var(--orange);
+  padding: 0 var(--space-3);
 }
 
 .estimator-submit {
@@ -1140,18 +1181,15 @@ select {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: var(--fs-micro);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-dim);
 }
 
 .mobile-total-value {
   font-family: var(--font-display);
   font-size: 22px;
   letter-spacing: -0.02em;
-  color: var(--orange);
+  color: var(--bg);
+  background: var(--orange);
+  padding: 0 var(--space-3);
 }
 
 @media (min-width: 1024px) {
@@ -1180,16 +1218,64 @@ select {
   }
 }
 
+/* A document does not centre its last page. The closing block is one solid
+   orange plate, aligned with everything above it. */
 .cta-module {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: var(--space-10) var(--space-8);
-  text-align: center;
-  box-shadow: 0 0 0 1px rgba(255, 85, 0, 0.12), 0 0 40px rgba(255, 85, 0, 0.08);
+  padding: var(--space-12) var(--space-10);
+  text-align: left;
+  background-color: var(--orange);
+  border-color: var(--orange);
+  box-shadow: none;
+  color: #241708;
+  --text: #08080a;
+  --text-dim: #241708;
+  --border: rgba(8, 8, 10, 0.5);
+  /* Registration marks rather than machined studs. */
+  background-image:
+    radial-gradient(circle, rgba(8, 8, 10, 0.75) 55%, transparent 58%),
+    radial-gradient(circle, rgba(8, 8, 10, 0.75) 55%, transparent 58%),
+    radial-gradient(circle, rgba(8, 8, 10, 0.75) 55%, transparent 58%),
+    radial-gradient(circle, rgba(8, 8, 10, 0.75) 55%, transparent 58%);
 }
 
 .cta-module .eyebrow {
-  justify-content: center;
+  color: var(--bg);
+}
+
+.cta-module .eyebrow::after {
+  background: var(--bg);
+}
+
+.cta-module .led {
+  background: var(--bg);
+  box-shadow: none;
+}
+
+.cta-module .btn-primary {
+  background: var(--bg);
+  color: var(--orange);
+  border-color: var(--bg);
+}
+
+.cta-module .btn-primary:hover,
+.cta-module .btn-primary:focus-visible {
+  background: #241708;
+  border-color: #241708;
+}
+
+.cta-module .cta-address {
+  color: #241708;
+  text-decoration-color: rgba(8, 8, 10, 0.45);
+}
+
+.cta-module .cta-address:hover,
+.cta-module .cta-address:focus-visible {
+  color: var(--bg);
+  text-decoration-color: currentColor;
+}
+
+.cta-module :focus-visible {
+  outline-color: var(--bg);
 }
 
 .cta-module h2 {
@@ -1199,8 +1285,8 @@ select {
 
 .cta-module p {
   font-size: var(--fs-body);
-  max-width: 46ch;
-  margin: 0 auto var(--space-8);
+  max-width: 52ch;
+  margin: 0 0 var(--space-8);
 }
 
 /* These are <a> elements following a button. As inline boxes their margin-top
@@ -1237,7 +1323,7 @@ select {
 
 .site-footer {
   padding: var(--space-10) 0 var(--space-12);
-  text-align: center;
+  text-align: left;
   border-top: 1px solid var(--border-dim);
 }
 
@@ -1250,8 +1336,8 @@ select {
 .site-footer p {
   font-size: var(--fs-label);
   color: var(--text-dim);
-  max-width: 60ch;
-  margin: 0 auto;
+  max-width: 62ch;
+  margin: 0;
 }
 
 .site-footer .footer-contact {
@@ -1379,8 +1465,21 @@ select {
     box-shadow: none !important;
   }
 
+  /* The orange plates are a screen treatment. On paper the rider is ink on
+     white, so the module head reverts to a ruled heading. */
   .module-card-head {
-    border-bottom-color: #999;
+    margin: 0 0 var(--space-4);
+    padding: 0 0 var(--space-4);
+    background: none !important;
+    border-bottom: 1px solid #999;
+  }
+
+  .module-card-head h3 {
+    color: #000 !important;
+  }
+
+  .eyebrow::after {
+    display: none;
   }
 
   .module-row {
@@ -1396,6 +1495,7 @@ select {
   }
 
   .row-tag {
+    background: none !important;
     border-color: #999;
     color: #000 !important;
   }
