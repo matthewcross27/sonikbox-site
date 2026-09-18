@@ -245,7 +245,7 @@
 
   estimatorSubmit.addEventListener("click", function () {
     var quote = recalculate();
-    var subject = "Session Estimate";
+    var subject = "Session Request";
     var bodyLines = [
       "Hub: " + currentHubLabel(),
       "Tracking hours: " + quote.hours + " hrs",
