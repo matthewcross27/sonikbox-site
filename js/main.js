@@ -322,17 +322,93 @@
   if (heroPhotoFrame && !prefersReducedMotion && canHoverFine) {
     var MAX_TILT_DEG = 6;
 
+    function setTilt(rotateXDeg, rotateYDeg) {
+      // Written straight to transform (not a custom property) so this
+      // recalculates only heroPhotoFrame itself, not a subtree.
+      heroPhotoFrame.style.transform =
+        "perspective(900px) rotateX(" + rotateXDeg + "deg) rotateY(" + rotateYDeg + "deg)";
+    }
+
     heroPhotoFrame.addEventListener("mousemove", function (event) {
       var rect = heroPhotoFrame.getBoundingClientRect();
       var px = (event.clientX - rect.left) / rect.width - 0.5;
       var py = (event.clientY - rect.top) / rect.height - 0.5;
-      heroPhotoFrame.style.setProperty("--tilt-x", (px * MAX_TILT_DEG * 2) + "deg");
-      heroPhotoFrame.style.setProperty("--tilt-y", (py * -MAX_TILT_DEG * 2) + "deg");
+      setTilt(py * -MAX_TILT_DEG * 2, px * MAX_TILT_DEG * 2);
     });
 
     heroPhotoFrame.addEventListener("mouseleave", function () {
-      heroPhotoFrame.style.setProperty("--tilt-x", "0deg");
-      heroPhotoFrame.style.setProperty("--tilt-y", "0deg");
+      setTilt(0, 0);
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // EXPERIMENTAL: Console Scroll rail — off by default, never touches the
+  // page above unless the captain switches it on. State lives only in
+  // localStorage so a reload during review keeps it on. To remove this
+  // idea entirely: delete this block, the matching CSS section, and the
+  // two elements at the end of index.html's <body>.
+  // ---------------------------------------------------------------------
+  var experimentalToggle = document.getElementById("experimental-toggle");
+  var consoleRailIndicator = document.getElementById("console-rail-indicator");
+  var consoleRailTrack = document.querySelector(".console-rail-track");
+  var CONSOLE_RAIL_STORAGE_KEY = "sonikbox-experimental-console-rail";
+  var consoleRailScrollHandler = null;
+  var consoleRailResizeHandler = null;
+
+  function updateConsoleRailIndicator() {
+    var trackHeight = consoleRailTrack.clientHeight;
+    var travelRange = Math.max(trackHeight - consoleRailIndicator.clientHeight, 0);
+    var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    var progress = scrollable > 0 ? window.scrollY / scrollable : 0;
+    progress = Math.min(Math.max(progress, 0), 1);
+    consoleRailIndicator.style.transform = "translateY(" + (progress * travelRange) + "px)";
+  }
+
+  function enableConsoleRail() {
+    document.documentElement.classList.add("console-rail-on");
+    experimentalToggle.setAttribute("aria-pressed", "true");
+    updateConsoleRailIndicator();
+    consoleRailScrollHandler = updateConsoleRailIndicator;
+    consoleRailResizeHandler = updateConsoleRailIndicator;
+    window.addEventListener("scroll", consoleRailScrollHandler, { passive: true });
+    window.addEventListener("resize", consoleRailResizeHandler);
+  }
+
+  function disableConsoleRail() {
+    document.documentElement.classList.remove("console-rail-on");
+    experimentalToggle.setAttribute("aria-pressed", "false");
+    if (consoleRailScrollHandler) {
+      window.removeEventListener("scroll", consoleRailScrollHandler);
+      window.removeEventListener("resize", consoleRailResizeHandler);
+      consoleRailScrollHandler = null;
+      consoleRailResizeHandler = null;
+    }
+  }
+
+  if (experimentalToggle && consoleRailIndicator && consoleRailTrack) {
+    var storedPreference = null;
+    try {
+      storedPreference = window.localStorage.getItem(CONSOLE_RAIL_STORAGE_KEY);
+    } catch (e) {
+      storedPreference = null;
+    }
+
+    if (storedPreference === "on") {
+      enableConsoleRail();
+    }
+
+    experimentalToggle.addEventListener("click", function () {
+      var turningOn = experimentalToggle.getAttribute("aria-pressed") !== "true";
+      if (turningOn) {
+        enableConsoleRail();
+      } else {
+        disableConsoleRail();
+      }
+      try {
+        window.localStorage.setItem(CONSOLE_RAIL_STORAGE_KEY, turningOn ? "on" : "off");
+      } catch (e) {
+        // Best-effort only; the toggle still works for this page view.
+      }
     });
   }
 })();

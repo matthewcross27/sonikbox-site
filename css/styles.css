@@ -60,6 +60,31 @@
   box-sizing: border-box;
 }
 
+/* Fader scrollbar: the page's own scroll travel reads as a rack fader, the
+   same visual language as the range-slider thumb in the rate builder. */
+html {
+  scrollbar-color: var(--orange) var(--panel);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--panel);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--orange);
+  border: 3px solid var(--panel);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--orange-hover);
+}
+
 /* Grid items default to a content-based auto min-width, which lets long
    unbreakable labels blow out narrow tracks. Force them to respect the
    track instead. */
@@ -84,6 +109,23 @@ body {
   /* Long leading: this page is read, not scanned. */
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Analog grain: a fixed, near-invisible SVG noise texture over the whole
+   viewport - tape hiss made visible, not decoration for its own sake. It
+   gives every dark panel the tactile, slightly filmic warmth of a physical
+   console instead of a flat digital black. Static (no motion), so it costs
+   nothing under reduced motion and needs no exception there. Hidden in
+   print - ink has no business simulating tape noise. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 img {
@@ -293,10 +335,16 @@ p {
   border-color: var(--orange);
 }
 
-.btn-primary:hover,
 .btn-primary:focus-visible {
   background: var(--orange-hover);
   border-color: var(--orange-hover);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    background: var(--orange-hover);
+    border-color: var(--orange-hover);
+  }
 }
 
 .btn-primary:active,
@@ -310,10 +358,16 @@ p {
   border-color: var(--border);
 }
 
-.btn-secondary:hover,
 .btn-secondary:focus-visible {
   border-color: var(--orange);
   color: var(--orange);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover {
+    border-color: var(--orange);
+    color: var(--orange);
+  }
 }
 
 .btn-block {
@@ -418,9 +472,14 @@ html.js-reveal .reveal.is-revealed {
   transition: color 0.15s var(--ease-out);
 }
 
-.nav-links a:hover,
 .nav-links a:focus-visible {
   color: var(--orange);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-links a:hover {
+    color: var(--orange);
+  }
 }
 
 .nav-actions {
@@ -511,13 +570,15 @@ html.js-reveal .reveal.is-revealed {
     background: var(--bg);
     border-bottom: 1px solid var(--border-dim);
     z-index: 99;
-    /* Opens from the nav it hangs off, not from the centre of the screen. */
+    /* Opens from the nav it hangs off, not from the centre of the screen.
+       Closing is snappier than opening (160ms vs 220ms) - the system should
+       get out of the way faster than it announces itself. */
     transform: translateY(-8px);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: transform 0.22s var(--ease-out), opacity 0.22s var(--ease-out),
-      visibility 0s linear 0.22s;
+    transition: transform 0.16s var(--ease-out), opacity 0.16s var(--ease-out),
+      visibility 0s linear 0.16s;
   }
 
   .nav-panel.is-open {
@@ -597,11 +658,11 @@ html.js-reveal .reveal.is-revealed {
 }
 
 .hero-badges { animation-delay: 0ms; }
-.hero-photo-panel { animation-delay: 60ms; }
-.hero h1 { animation-delay: 70ms; }
-.hero-body { animation-delay: 140ms; }
-.hero-actions { animation-delay: 200ms; }
-.hero-copy .cta-address { animation-delay: 240ms; }
+.hero h1 { animation-delay: 50ms; }
+.hero-photo-panel { animation-delay: 90ms; }
+.hero-body { animation-delay: 130ms; }
+.hero-actions { animation-delay: 180ms; }
+.hero-copy .cta-address { animation-delay: 220ms; }
 
 .hero-badges {
   display: flex;
@@ -661,13 +722,12 @@ html.js-reveal .reveal.is-revealed {
   overflow: hidden;
   border: 1px solid var(--border);
   aspect-ratio: 4 / 3;
-  /* One signature "alive" touch: js/main.js drives these two custom
-     properties from the pointer position, fine-pointer devices only, and
-     leaves them alone entirely under reduced motion. The transition supplies
-     the spring-back-to-neutral feel on mouseleave. */
-  --tilt-x: 0deg;
-  --tilt-y: 0deg;
-  transform: perspective(900px) rotateX(var(--tilt-y)) rotateY(var(--tilt-x));
+  /* One signature "alive" touch: js/main.js writes the perspective/rotate
+     transform directly from the pointer position (not through a custom
+     property, which would trigger a style recalc) on fine-pointer devices
+     only, and leaves this element alone entirely under reduced motion. The
+     transition supplies the spring-back-to-neutral feel on mouseleave. */
+  transform: perspective(900px) rotateX(0deg) rotateY(0deg);
   transition: transform 0.4s var(--ease-out);
 }
 
@@ -1050,9 +1110,11 @@ html.js-reveal .reveal.is-revealed {
   transform: scale(0.97);
 }
 
-.hub-toggle button:hover {
-  border-color: var(--orange-dim);
-  color: var(--text);
+@media (hover: hover) and (pointer: fine) {
+  .hub-toggle button:hover {
+    border-color: var(--orange-dim);
+    color: var(--text);
+  }
 }
 
 .hub-toggle button[aria-pressed="true"] {
@@ -1162,8 +1224,10 @@ select {
     color 0.15s var(--ease-out), transform 0.12s var(--ease-out);
 }
 
-.addon-option:hover {
-  border-color: var(--orange-dim);
+@media (hover: hover) and (pointer: fine) {
+  .addon-option:hover {
+    border-color: var(--orange-dim);
+  }
 }
 
 .addon-option:active {
@@ -1367,10 +1431,16 @@ select {
   border-color: var(--bg);
 }
 
-.cta-module .btn-primary:hover,
 .cta-module .btn-primary:focus-visible {
   background: #241708;
   border-color: #241708;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cta-module .btn-primary:hover {
+    background: #241708;
+    border-color: #241708;
+  }
 }
 
 .cta-module .cta-address {
@@ -1378,10 +1448,16 @@ select {
   text-decoration-color: rgba(8, 8, 10, 0.45);
 }
 
-.cta-module .cta-address:hover,
 .cta-module .cta-address:focus-visible {
   color: var(--bg);
   text-decoration-color: currentColor;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cta-module .cta-address:hover {
+    color: var(--bg);
+    text-decoration-color: currentColor;
+  }
 }
 
 .cta-module :focus-visible {
@@ -1413,10 +1489,16 @@ select {
   text-decoration-color: var(--border);
 }
 
-.cta-address:hover,
 .cta-address:focus-visible {
   color: var(--orange);
   text-decoration-color: currentColor;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cta-address:hover {
+    color: var(--orange);
+    text-decoration-color: currentColor;
+  }
 }
 
 /* Inside a sentence it stays inline, but it still has to look like a link. */
@@ -1486,6 +1568,7 @@ select {
   .hub-toggle button:active,
   .addon-option:active,
   .nav-toggle:active,
+  .experimental-toggle:active,
   .hub-card:hover,
   .module-card:hover {
     transform: none !important;
@@ -1515,6 +1598,10 @@ select {
   #estimator,
   .cta-band,
   .site-footer {
+    display: none !important;
+  }
+
+  body::after {
     display: none !important;
   }
 
@@ -1648,5 +1735,97 @@ select {
   .module-row dd {
     /* No right-alignment in print either: values read as a column. */
     text-align: left;
+  }
+}
+
+/* ==========================================================================
+   EXPERIMENTAL — Console Scroll rail. Off by default; never affects the
+   default view. A genuinely different idea for the captain to compare live,
+   not a variant of the shipped page - a thin fader-style rail down the right
+   edge of wide viewports that tracks scroll position the way a channel strip
+   tracks a fader, giving the whole page one continuous thread instead of
+   section-by-section reveals. Toggled at runtime by #experimental-toggle
+   (js/main.js), state kept in localStorage only so it survives a reload
+   during review. To remove entirely: delete this section, the two elements
+   at the end of index.html's <body>, and the matching block in js/main.js.
+   ========================================================================== */
+
+.experimental-toggle {
+  position: fixed;
+  left: var(--space-4);
+  /* Bottom-left collides with the mobile sticky total bar while the
+     estimator is in view; just under the nav is clear at every width. */
+  top: calc(var(--nav-height) + var(--space-4));
+  z-index: 500;
+  background: var(--bg);
+  border: 1px dashed var(--orange);
+  color: var(--orange);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  transition: transform 0.12s var(--ease-out), background-color 0.15s var(--ease-out),
+    color 0.15s var(--ease-out);
+}
+
+.experimental-toggle:active {
+  transform: scale(0.97);
+}
+
+.experimental-toggle[aria-pressed="true"] {
+  background: var(--orange);
+  color: var(--bg);
+}
+
+.console-rail {
+  display: none;
+}
+
+html.console-rail-on .console-rail {
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  z-index: 499;
+  pointer-events: none;
+}
+
+.console-rail-track {
+  position: absolute;
+  top: var(--space-16);
+  bottom: var(--space-16);
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--border);
+}
+
+.console-rail-indicator {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  background: var(--orange);
+  box-shadow: 0 0 6px 1px rgba(255, 85, 0, 0.7);
+}
+
+/* Below this width the rail would sit over content or collide with the
+   mobile total bar - it only belongs where there's clear margin for it. */
+@media (max-width: 1279px) {
+  html.console-rail-on .console-rail {
+    display: none;
+  }
+}
+
+@media print {
+  .experimental-toggle,
+  .console-rail {
+    display: none !important;
   }
 }
