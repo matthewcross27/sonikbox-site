@@ -282,4 +282,57 @@
   printBtn.addEventListener("click", function () {
     window.print();
   });
+
+  // ---------------------------------------------------------------------
+  // Scroll reveal — a handful of section-level entrances (never per-card),
+  // gated on both feature support and prefers-reduced-motion. css/styles.css
+  // only ever hides a .reveal element once <html> carries .js-reveal, so a
+  // browser that lands in neither branch below leaves every .reveal element
+  // fully visible instead of stuck invisible.
+  // ---------------------------------------------------------------------
+  var prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!prefersReducedMotion && "IntersectionObserver" in window) {
+    document.documentElement.classList.add("js-reveal");
+
+    var revealObserver = new IntersectionObserver(
+      function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
+    );
+
+    document.querySelectorAll(".reveal").forEach(function (target) {
+      revealObserver.observe(target);
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // Hero photo tilt — the one "alive" signature. Fine-pointer, hover-capable
+  // devices only, and skipped outright under reduced motion.
+  // ---------------------------------------------------------------------
+  var heroPhotoFrame = document.querySelector(".hero-photo-frame");
+  var canHoverFine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  if (heroPhotoFrame && !prefersReducedMotion && canHoverFine) {
+    var MAX_TILT_DEG = 6;
+
+    heroPhotoFrame.addEventListener("mousemove", function (event) {
+      var rect = heroPhotoFrame.getBoundingClientRect();
+      var px = (event.clientX - rect.left) / rect.width - 0.5;
+      var py = (event.clientY - rect.top) / rect.height - 0.5;
+      heroPhotoFrame.style.setProperty("--tilt-x", (px * MAX_TILT_DEG * 2) + "deg");
+      heroPhotoFrame.style.setProperty("--tilt-y", (py * -MAX_TILT_DEG * 2) + "deg");
+    });
+
+    heroPhotoFrame.addEventListener("mouseleave", function () {
+      heroPhotoFrame.style.setProperty("--tilt-x", "0deg");
+      heroPhotoFrame.style.setProperty("--tilt-y", "0deg");
+    });
+  }
 })();
