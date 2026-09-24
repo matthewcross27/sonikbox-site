@@ -1596,7 +1596,8 @@ select {
   #hubs,
   #estimator,
   .cta-band,
-  .site-footer {
+  .site-footer,
+  .version-switch {
     display: none !important;
   }
 
@@ -1734,5 +1735,82 @@ select {
   .module-row dd {
     /* No right-alignment in print either: values read as a column. */
     text-align: left;
+  }
+}
+
+/* ==========================================================================
+   Design preview toggle - temporary, for client review of Design A vs
+   Design B. Remove this block plus the <div class="version-switch"> markup
+   in index.html (and version-b.html's mirror of both) once the captain has
+   picked a direction.
+   ========================================================================== */
+
+.version-switch {
+  position: fixed;
+  top: calc(var(--nav-height) + var(--space-3));
+  right: var(--space-4);
+  z-index: 150;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  max-width: calc(100vw - var(--space-8));
+  padding: var(--space-2) var(--space-4);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+}
+
+.version-switch-label {
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.version-switch-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-dim);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.version-switch-option.is-current {
+  background: var(--orange);
+  color: var(--bg);
+  border-color: var(--orange);
+}
+
+.version-switch-note {
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .version-switch-option:not(.is-current):hover {
+    border-color: var(--orange);
+  }
+}
+
+@media (max-width: 767px) {
+  /* A compact corner badge rather than a full-width strip: it stays fixed
+     while the page scrolls, so a wide banner would spend several lines
+     sitting over whatever body copy happens to scroll underneath it. */
+  .version-switch {
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .version-switch-label,
+  .version-switch-note {
+    display: none;
+  }
+
+  .version-switch-option {
+    padding: var(--space-1) var(--space-2);
   }
 }
