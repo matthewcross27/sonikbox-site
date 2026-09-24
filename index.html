@@ -3,6 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script>
+    // Two designs are live for client review: this page (Design A) and
+    // version-b.html (Design B). ?v=b or a remembered choice sends a visitor
+    // straight to Design B; everyone else lands here, unchanged. Kept as a
+    // synchronous inline script at the very top of <head> so a redirect fires
+    // before anything renders. See the .version-switch note further down for
+    // the visible toggle, and version-b.html for its mirror of this script.
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var choice = params.get("v") || localStorage.getItem("sonikbox-version") || "a";
+      if (choice === "b") {
+        location.replace("version-b.html");
+        return;
+      }
+      localStorage.setItem("sonikbox-version", "a");
+    })();
+  </script>
   <title>SonikBox | Mobile Recording Studio in Los Angeles &amp; San Diego</title>
   <meta name="description" content="We drive a fully decoupled float-room studio to your door in LA or San Diego, with Neve preamps and Neumann mics. Price a session and book by email." />
 
@@ -21,13 +38,13 @@
   <meta name="twitter:image" content="https://www.sonikbox.studio/assets/img/control-room.jpg" />
 
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#0b0a08" />
+  <meta name="theme-color" content="#08080a" />
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/styles.css" />
 </head>
@@ -35,10 +52,21 @@
 
   <a class="skip-link" href="#main">Skip to main content</a>
 
+  <!-- ===================== DESIGN PREVIEW TOGGLE ===================== -->
+  <!-- Two live designs for client review. Remove this whole block (and its
+       .version-switch rules at the bottom of css/styles.css) once the
+       captain has picked one; version-b.html and css/styles-b.css can then
+       be deleted too. -->
+  <div class="version-switch" role="note" aria-label="Design preview">
+    <span class="version-switch-label">Which look do you prefer?</span>
+    <span class="version-switch-option is-current" aria-current="page">Design A <span class="version-switch-note">(viewing now)</span></span>
+    <a class="version-switch-option" href="version-b.html">View Design B</a>
+  </div>
+
   <!-- ===================== NAV ===================== -->
   <header class="site-nav">
-    <div class="container nav-inner">
-      <a class="logo" href="#top"><span class="logo-word">SONIK<span class="mark">BOX</span></span></a>
+    <div class="container">
+      <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true"></span><span class="logo-word"><span class="white">SONIK</span><span class="orange">BOX</span></span></a>
 
       <nav aria-label="Primary">
         <ul class="nav-links">
@@ -70,39 +98,38 @@
 
     <!-- ===================== HERO ===================== -->
     <section class="hero" aria-labelledby="hero-heading">
-      <div class="hero-grid">
+      <div class="container hero-grid">
         <div class="hero-copy">
-          <div class="container">
-            <p class="hero-kicker">
-              <span class="hub-status"><span class="led"></span>LA Hub - Online</span>
-              <span class="hub-status"><span class="led"></span>SD Hub - Online</span>
-            </p>
-
-            <h1 id="hero-heading" class="hero-title">
-              <span class="hero-line">A World-Class Recording Rig.</span>
-              <span class="hero-line"><span class="hero-fill">Parked Outside Your Door.</span></span>
-            </h1>
-
-            <p class="hero-lede">
-              We run two identical, fully decoupled acoustic float-room studios across Southern California. You skip the commercial studio politics and the drive across town, and cut a record outside your own door.
-            </p>
-
-            <div class="hero-actions">
-              <a class="btn btn-primary" id="hero-book-btn" href="#"><svg class="btn-icon" viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M0 0v12l10-6z" fill="currentColor"/></svg>Book This Rig</a>
-              <a class="btn btn-secondary" href="#specs">Browse the Mic Locker</a>
-            </div>
-            <a class="cta-address" href="mailto:book@sonikbox.studio">No mail app? Email book@sonikbox.studio</a>
+          <div class="hero-badges">
+            <span class="hub-badge"><span class="led"></span>LA Hub - Online</span>
+            <span class="hub-badge"><span class="led"></span>SD Hub - Online</span>
           </div>
+
+          <h1 id="hero-heading">
+            A World-Class Recording Rig.
+            <span class="accent">Parked Outside Your Door.</span>
+          </h1>
+
+          <p class="hero-body">
+            We run two identical, fully decoupled acoustic float-room studios across Southern California. You skip the commercial studio politics and the drive across town, and cut a record outside your own door.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" id="hero-book-btn" href="#"><svg class="btn-icon" viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M0 0v12l10-6z" fill="currentColor"/></svg>Book This Rig</a>
+            <a class="btn btn-secondary" href="#specs">Browse the Mic Locker</a>
+          </div>
+          <a class="cta-address" href="mailto:book@sonikbox.studio">No mail app? Email book@sonikbox.studio</a>
         </div>
 
-        <div class="hero-media">
-          <img class="hero-photo-frame" src="assets/img/control-room.jpg" alt="SonikBox mobile studio control room, neon-lit, with an engineer at the desk." width="1600" height="1200" loading="eager" />
-          <div class="hero-scrim" aria-hidden="true"></div>
-          <div class="hero-caption">
-            <div class="hero-caption-text">
-              <p class="hero-caption-eyebrow"><span class="led"></span>Acoustic Engineering</p>
-              <p class="hero-caption-title">NC-15 Certified Mobile Float Room</p>
-              <p class="hero-caption-body">Fully decoupled walls, custom damask broadband trapping and neon ambient tuning, for a quiet room to track in.</p>
+        <div class="hero-photo-panel rack-panel">
+          <div class="hero-photo-frame">
+            <img src="assets/img/control-room.jpg" alt="SonikBox mobile studio control room, neon-lit, with an engineer at the desk." width="1600" height="1200" loading="eager" />
+          </div>
+          <div class="hero-photo-caption">
+            <div>
+              <div class="eyebrow"><span class="led"></span>Acoustic Engineering</div>
+              <p class="hero-photo-title">NC-15 Certified Mobile Float Room</p>
+              <p>Fully decoupled walls, custom damask broadband trapping and neon ambient tuning, for a quiet room to track in.</p>
             </div>
             <div class="vu-meter" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
           </div>
@@ -111,134 +138,141 @@
     </section>
 
     <!-- ===================== HUBS ===================== -->
-    <section class="hubs" id="hubs" aria-labelledby="hubs-heading">
-      <div class="hubs-media reveal">
-        <img src="assets/img/lounge.jpg" alt="SonikBox leather lounge seating against backlit damask-patterned acoustic wall panels." width="1200" height="1600" loading="lazy" />
-      </div>
-
-      <div class="hubs-copy">
-        <div class="container">
-          <p class="tag-note">// The Lounge</p>
+    <section class="section" id="hubs" aria-labelledby="hubs-heading">
+      <div class="container hubs-grid">
+        <div class="hubs-copy reveal">
+          <div class="eyebrow">// The Lounge</div>
           <h2 id="hubs-heading">Room to Sit Between Takes</h2>
-          <p class="hubs-lede">You sit on custom-stitched leather against back-lit acoustic paneling, under RGB lighting zones you set to the color temperature you want.</p>
+          <p>You sit on custom-stitched leather against back-lit acoustic paneling, under RGB lighting zones you set to the color temperature you want.</p>
 
-          <dl class="hub-list">
-            <div class="hub-row">
-              <dt><span class="led"></span>Hub 01 - Greater Los Angeles Basin</dt>
-              <dd>We cover Hollywood, Burbank, Santa Monica, Silver Lake and the Valley.</dd>
+          <div class="hub-cards">
+            <div class="hub-card rack-panel">
+              <div class="hub-card-label"><span class="led"></span>Hub 01 - Greater Los Angeles Basin</div>
+              <p>We cover Hollywood, Burbank, Santa Monica, Silver Lake and the Valley.</p>
             </div>
-            <div class="hub-row">
-              <dt><span class="led"></span>Hub 02 - San Diego County</dt>
-              <dd>We cover downtown San Diego, North County, La Jolla and Chula Vista, and we drive out to El Cajon or the desert venues.</dd>
+            <div class="hub-card rack-panel">
+              <div class="hub-card-label"><span class="led"></span>Hub 02 - San Diego County</div>
+              <p>We cover downtown San Diego, North County, La Jolla and Chula Vista, and we drive out to El Cajon or the desert venues.</p>
             </div>
-          </dl>
+          </div>
+        </div>
+
+        <div class="hub-photo-frame reveal">
+          <img src="assets/img/lounge.jpg" alt="SonikBox leather lounge seating against backlit damask-patterned acoustic wall panels." width="1200" height="1600" loading="lazy" />
         </div>
       </div>
     </section>
 
-    <!-- ===================== SPECS / STUDIO RIDER ===================== -->
-    <section class="rider" id="specs" aria-labelledby="specs-heading">
+    <!-- ===================== SPECS ===================== -->
+    <section class="section" id="specs" aria-labelledby="specs-heading">
       <div class="container">
         <p class="print-only print-title">SonikBox Studio Rider</p>
         <p class="print-only print-subtitle">The same gear in both mobile hubs.</p>
 
-        <div class="rider-head reveal">
-          <div class="rider-intro">
-            <h2 id="specs-heading">The Gear In Both Vehicles<span class="tag-note tag-note--inline">// Signal Chain Manifest</span></h2>
-            <p class="rider-lede">Both vehicles carry the same gear, so you get the same signal chain whichever hub takes the job.</p>
+        <div class="section-head-row reveal">
+          <div class="section-head">
+            <div class="eyebrow">// Signal Chain Manifest</div>
+            <h2 id="specs-heading">The Gear In Both Vehicles</h2>
+            <p>Both vehicles carry the same gear, so you get the same signal chain whichever hub takes the job.</p>
           </div>
           <button class="btn btn-secondary no-print" id="print-rider-btn" type="button"><svg class="btn-icon" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M3.5 0h7v3.5h-7zM1 4.5h12v5.5h-2.5V7h-7v3H1zM4.5 8h5v6h-5z" fill="currentColor"/></svg>Print Studio Rider</button>
         </div>
 
-        <div class="rider-body reveal">
-          <nav class="rider-index no-print" aria-label="Jump to a gear module">
-            <a href="#module-01">Module 01 - Monitoring &amp; Room Tuning</a>
-            <a href="#module-02">Module 02 — Analog Signal Chain &amp; Processing</a>
-            <a href="#module-03">Module 03 - Microphone Locker</a>
-            <a href="#module-04">Module 04 - Clean Power &amp; Network</a>
-            <a href="#module-05">Module 05 - Instrument &amp; Performance Locker</a>
-          </nav>
+        <div class="module-grid reveal">
+          <div class="module-card rack-panel">
+            <div class="module-card-head">
+              <h3>Module 01 - Monitoring &amp; Room Tuning</h3>
+              <div class="vu-meter no-print" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            </div>
+            <dl class="module-rows">
+              <div class="module-row"><dt>Main Reference Monitors</dt><dd>KRK Rokit 7s</dd></div>
+              <div class="module-row"><dt>Nearfield Reference</dt><dd>Avantone Pro Active MixCubes</dd></div>
+              <div class="module-row"><dt>Headphone Distribution</dt><dd>Dangerous Music SOURCE &amp; Audio-Technica M50x (x4)</dd></div>
+              <div class="module-row"><dt>Room Tuning</dt><dd>Custom Vicoustic Diffusion &amp; Bass Trapping</dd></div>
+            </dl>
+          </div>
 
-          <div class="module-list">
-            <article class="module" id="module-01">
-              <h3><span class="module-mark" aria-hidden="true"></span>Module 01 - Monitoring &amp; Room Tuning</h3>
-              <dl class="module-rows">
-                <div class="module-row"><dt>Main Reference Monitors</dt><dd>KRK Rokit 7s</dd></div>
-                <div class="module-row"><dt>Nearfield Reference</dt><dd>Avantone Pro Active MixCubes</dd></div>
-                <div class="module-row"><dt>Headphone Distribution</dt><dd>Dangerous Music SOURCE &amp; Audio-Technica M50x (x4)</dd></div>
-                <div class="module-row"><dt>Room Tuning</dt><dd>Custom Vicoustic Diffusion &amp; Bass Trapping</dd></div>
-              </dl>
-            </article>
+          <div class="module-card rack-panel">
+            <div class="module-card-head">
+              <h3>Module 02 — Analog Signal Chain &amp; Processing</h3>
+              <div class="vu-meter no-print" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            </div>
+            <dl class="module-rows">
+              <div class="module-row"><dt>Microphone Preamps</dt><dd>Neve 1073OPX (8 Channels of Pure Analog Warmth)</dd></div>
+              <div class="module-row"><dt>Tube Dynamics</dt><dd>Tube-Tech CL 1B Opto Compressor Reissue</dd></div>
+              <div class="module-row"><dt>Audio Converters</dt><dd>Universal Audio Apollo x16 Heritage Edition</dd></div>
+              <div class="module-row"><dt>DAW System</dt><dd>Mac Studio M2 Ultra (Pro Tools Ultimate, Logic, Ableton)</dd></div>
+            </dl>
+          </div>
 
-            <article class="module" id="module-02">
-              <h3><span class="module-mark" aria-hidden="true"></span>Module 02 — Analog Signal Chain &amp; Processing</h3>
-              <dl class="module-rows">
-                <div class="module-row"><dt>Microphone Preamps</dt><dd>Neve 1073OPX (8 Channels of Pure Analog Warmth)</dd></div>
-                <div class="module-row"><dt>Tube Dynamics</dt><dd>Tube-Tech CL 1B Opto Compressor Reissue</dd></div>
-                <div class="module-row"><dt>Audio Converters</dt><dd>Universal Audio Apollo x16 Heritage Edition</dd></div>
-                <div class="module-row"><dt>DAW System</dt><dd>Mac Studio M2 Ultra (Pro Tools Ultimate, Logic, Ableton)</dd></div>
-              </dl>
-            </article>
+          <div class="module-card rack-panel">
+            <div class="module-card-head">
+              <h3>Module 03 - Microphone Locker</h3>
+              <div class="vu-meter no-print" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            </div>
+            <dl class="module-rows">
+              <div class="module-row"><dt>Vocal Flagship</dt><dd>Neumann U87 Ai Large-Diaphragm Condenser</dd></div>
+              <div class="module-row"><dt>Multi-Pattern Condensers</dt><dd>AKG C414 XLII (Stereo Matched Pair)</dd></div>
+              <div class="module-row"><dt>Tube Condenser</dt><dd>ADK A48</dd></div>
+              <div class="module-row"><dt>Vocal / Broadcast Dynamics</dt><dd>Shure SM7B (x1)</dd></div>
+            </dl>
+          </div>
 
-            <article class="module" id="module-03">
-              <h3><span class="module-mark" aria-hidden="true"></span>Module 03 - Microphone Locker</h3>
-              <dl class="module-rows">
-                <div class="module-row"><dt>Vocal Flagship</dt><dd>Neumann U87 Ai Large-Diaphragm Condenser</dd></div>
-                <div class="module-row"><dt>Multi-Pattern Condensers</dt><dd>AKG C414 XLII (Stereo Matched Pair)</dd></div>
-                <div class="module-row"><dt>Tube Condenser</dt><dd>ADK A48</dd></div>
-                <div class="module-row"><dt>Vocal / Broadcast Dynamics</dt><dd>Shure SM7B (x1)</dd></div>
-              </dl>
-            </article>
+          <div class="module-card rack-panel">
+            <div class="module-card-head">
+              <h3>Module 04 - Clean Power &amp; Network</h3>
+              <div class="vu-meter no-print" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            </div>
+            <dl class="module-rows">
+              <div class="module-row"><dt>Power Delivery</dt><dd>Victron Quattro Inverter (120V / 60Hz) &amp; Backup Cummins Generator with Auto Start</dd></div>
+              <div class="module-row"><dt>Studio Isolation</dt><dd>Furman M8x2 Power Conditioner</dd></div>
+              <div class="module-row"><dt>Network Connections</dt><dd>Starlink Mobility for Real-Time cloud tracking/collabs</dd></div>
+            </dl>
+          </div>
 
-            <article class="module" id="module-04">
-              <h3><span class="module-mark" aria-hidden="true"></span>Module 04 - Clean Power &amp; Network</h3>
-              <dl class="module-rows">
-                <div class="module-row"><dt>Power Delivery</dt><dd>Victron Quattro Inverter (120V / 60Hz) &amp; Backup Cummins Generator with Auto Start</dd></div>
-                <div class="module-row"><dt>Studio Isolation</dt><dd>Furman M8x2 Power Conditioner</dd></div>
-                <div class="module-row"><dt>Network Connections</dt><dd>Starlink Mobility for Real-Time cloud tracking/collabs</dd></div>
-              </dl>
-            </article>
-
-            <article class="module module--wide" id="module-05">
-              <h3><span class="module-mark" aria-hidden="true"></span>Module 05 - Instrument &amp; Performance Locker</h3>
-              <dl class="module-rows">
-                <div class="module-row module-row-stacked">
-                  <dt>Synthesizers <span class="row-tag row-tag-included">Included</span></dt>
-                  <dd>Moog Sub 37, Dave Smith Instruments Prophet &rsquo;08, Behringer DeepMind 12, Korg microKORG, Akai Professional MPK Mini</dd>
-                </div>
-                <div class="module-row module-row-stacked">
-                  <dt>Drum Machines &amp; Pads <span class="row-tag row-tag-included">Included</span></dt>
-                  <dd>Elektron Digitakt, Akai Professional APC64, Akai Professional MPD218</dd>
-                </div>
-                <div class="module-row module-row-stacked">
-                  <dt>DJ Gear <span class="row-tag row-tag-addon">Paid add-on - not included</span></dt>
-                  <dd>
-                    <!-- These rows declare the DJ add-on prices for the whole page: the estimator
-                         reads data-addon-amount, so the visible text and the attribute must stay in step. -->
-                    <span class="addon-line">Pioneer DJ CDJ-3000 (x2) &amp; Pioneer DJ DJM-A9 Mixer <span class="addon-price" data-addon-price="addon-dj-cdj" data-addon-amount="150">+$150 flat</span></span>
-                    <span class="addon-line">Pioneer DJ XDJ-RX3 <span class="addon-price" data-addon-price="addon-dj-xdj" data-addon-amount="100">+$100 flat</span></span>
-                    <span class="addon-line addon-note">Ask for DJ gear when you book.</span>
-                  </dd>
-                </div>
-              </dl>
-            </article>
+          <div class="module-card module-card-wide rack-panel">
+            <div class="module-card-head">
+              <h3>Module 05 - Instrument &amp; Performance Locker</h3>
+              <div class="vu-meter no-print" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            </div>
+            <dl class="module-rows">
+              <div class="module-row module-row-stacked">
+                <dt>Synthesizers <span class="row-tag row-tag-included">Included</span></dt>
+                <dd>Moog Sub 37, Dave Smith Instruments Prophet &rsquo;08, Behringer DeepMind 12, Korg microKORG, Akai Professional MPK Mini</dd>
+              </div>
+              <div class="module-row module-row-stacked">
+                <dt>Drum Machines &amp; Pads <span class="row-tag row-tag-included">Included</span></dt>
+                <dd>Elektron Digitakt, Akai Professional APC64, Akai Professional MPD218</dd>
+              </div>
+              <div class="module-row module-row-stacked">
+                <dt>DJ Gear <span class="row-tag row-tag-addon">Paid add-on - not included</span></dt>
+                <dd>
+                  <!-- These rows declare the DJ add-on prices for the whole page: the estimator
+                       reads data-addon-amount, so the visible text and the attribute must stay in step. -->
+                  <span class="addon-line">Pioneer DJ CDJ-3000 (x2) &amp; Pioneer DJ DJM-A9 Mixer <span class="addon-price" data-addon-price="addon-dj-cdj" data-addon-amount="150">+$150 flat</span></span>
+                  <span class="addon-line">Pioneer DJ XDJ-RX3 <span class="addon-price" data-addon-price="addon-dj-xdj" data-addon-amount="100">+$100 flat</span></span>
+                  <span class="addon-line addon-note">Ask for DJ gear when you book.</span>
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ===================== ESTIMATOR ===================== -->
-    <section class="quote-section" id="estimator" aria-labelledby="estimator-heading">
+    <section class="section" id="estimator" aria-labelledby="estimator-heading">
       <div class="container">
-        <div class="quote-head reveal">
-          <h2 id="estimator-heading">Price Your Session<span class="tag-note tag-note--inline">// Session Rate Builder</span></h2>
-          <p class="quote-lede">Pick your hub, set the hours and add-ons, and send us the estimate when it looks right.</p>
+        <div class="section-head reveal">
+          <div class="eyebrow">// Session Rate Builder</div>
+          <h2 id="estimator-heading">Price Your Session</h2>
+          <p>Pick your hub, set the hours and add-ons, and send us the estimate when it looks right.</p>
         </div>
 
-        <div class="quote-panel estimator-panel reveal">
-          <div class="quote-grid">
-            <form id="estimator-form" class="quote-form">
-              <div class="field">
+        <div class="estimator-panel rack-panel reveal">
+          <div class="estimator-grid">
+            <form id="estimator-form">
+              <div class="field-group">
                 <span class="field-label" id="hub-toggle-label">Hub</span>
                 <div class="hub-toggle" role="group" aria-labelledby="hub-toggle-label">
                   <button type="button" id="hub-la" aria-pressed="true">Los Angeles Hub</button>
@@ -246,7 +280,7 @@
                 </div>
               </div>
 
-              <div class="field">
+              <div class="field-group">
                 <label class="field-label" for="hours-range">Tracking Hours</label>
                 <div class="range-row">
                   <input type="range" id="hours-range" min="4" max="12" step="1" value="4" aria-describedby="hours-rate-note" />
@@ -255,12 +289,12 @@
                 <p id="hours-rate-note" class="visually-hidden">Billed at $150 per hour</p>
               </div>
 
-              <div class="field">
+              <div class="field-group">
                 <label class="field-label" for="radius-select">Distance From Hub</label>
                 <select id="radius-select"></select>
               </div>
 
-              <div class="field">
+              <div class="field-group">
                 <span class="field-label" id="addons-label">Add-Ons</span>
                 <div class="addons" id="addons" role="group" aria-labelledby="addons-label">
                   <label class="addon-option">
@@ -281,16 +315,16 @@
               </div>
             </form>
 
-            <aside class="quote-summary" aria-labelledby="summary-heading">
-              <div class="quote-summary-head" id="summary-heading"><span class="led"></span>Session Breakdown</div>
-              <div class="quote-lines" aria-live="polite">
-                <div class="quote-line"><span>Base rate</span><span id="summary-base">$600</span></div>
-                <div class="quote-line"><span>Travel fee</span><span id="summary-travel">$0</span></div>
-                <div class="quote-line"><span>Add-ons</span><span id="summary-addons">$0</span></div>
-                <div class="quote-total">
-                  <span class="label">Total Session Estimate</span>
-                  <span class="value" id="summary-total">$600</span>
-                </div>
+            <aside class="summary-panel rack-panel" aria-labelledby="summary-heading">
+              <div class="summary-title" id="summary-heading"><span class="led"></span>Session Breakdown</div>
+              <div class="summary-figures" aria-live="polite">
+              <div class="summary-line"><span>Base rate</span><span id="summary-base">$600</span></div>
+              <div class="summary-line"><span>Travel fee</span><span id="summary-travel">$0</span></div>
+              <div class="summary-line"><span>Add-ons</span><span id="summary-addons">$0</span></div>
+              <div class="summary-total">
+                <span class="label">Total Session Estimate</span>
+                <span class="value" id="summary-total">$600</span>
+              </div>
               </div>
               <button class="btn btn-primary btn-block estimator-submit" id="estimator-submit" type="button">Request This Session</button>
             </aside>
@@ -298,26 +332,21 @@
         </div>
       </div>
 
-      <div class="mobile-total-bar" id="mobile-total-bar" aria-hidden="true">
+      <div class="mobile-total-bar rack-panel" id="mobile-total-bar" aria-hidden="true">
         <span class="mobile-total-label"><span class="led"></span>Session Total</span>
         <span class="mobile-total-value" id="mobile-total-value">$600</span>
       </div>
     </section>
 
-    <!-- ===================== FINALE / CTA BAND ===================== -->
-    <section class="finale" aria-labelledby="cta-heading">
-      <div class="container finale-grid">
-        <div class="finale-copy reveal">
-          <p class="finale-tag"><span class="led"></span>Status: Ready</p>
+    <!-- ===================== CTA BAND ===================== -->
+    <section class="cta-band" aria-labelledby="cta-heading">
+      <div class="container">
+        <div class="cta-module rack-panel reveal">
+          <div class="eyebrow"><span class="led"></span>Status: Ready</div>
           <h2 id="cta-heading">Ready to Track?</h2>
-          <p class="finale-lede">Tell us your hub and your date. We'll come back inside one business day with gear, crew and arrival time.</p>
-          <div class="finale-actions">
-            <a class="btn btn-dark" id="cta-book-btn" href="#"><svg class="btn-icon" viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M0 0v12l10-6z" fill="currentColor"/></svg>Email Us to Book</a>
-            <a class="cta-address" href="mailto:book@sonikbox.studio">book@sonikbox.studio</a>
-          </div>
-        </div>
-        <div class="finale-meter" aria-hidden="true">
-          <div class="vu-meter vu-meter--dark"><span></span><span></span><span></span><span></span></div>
+          <p>Tell us your hub and your date. We'll come back inside one business day with gear, crew and arrival time.</p>
+          <a class="btn btn-primary" id="cta-book-btn" href="#"><svg class="btn-icon" viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M0 0v12l10-6z" fill="currentColor"/></svg>Email Us to Book</a>
+          <a class="cta-address" href="mailto:book@sonikbox.studio">book@sonikbox.studio</a>
         </div>
       </div>
     </section>
