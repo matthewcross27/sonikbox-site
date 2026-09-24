@@ -1739,19 +1739,24 @@ select {
 }
 
 /* ==========================================================================
-   EXPERIMENTAL — Console Scroll rail. Off by default; never affects the
-   default view. A genuinely different idea for the captain to compare live,
-   not a variant of the shipped page - a boxed channel-strip module fixed to
-   the right edge of wide viewports (label, fader travel with tick marks, a
-   live numeric readout) whose fader cap tracks scroll position, giving the
-   whole page one continuous thread instead of section-by-section reveals.
-   Toggled at runtime by #experimental-toggle (js/main.js), state kept in
-   localStorage only so it survives a reload during review. To remove
-   entirely: delete this section, the elements at the end of index.html's
-   <body>, and the matching block in js/main.js.
+   EXPERIMENTAL — Console Scroll rail, review-only. Hidden from every real
+   visitor: the toggle only renders, and its JS only wires up, when the page
+   is loaded with ?console=1 in the URL (js/main.js adds html.experimental-
+   review for that case). Without the flag .experimental-toggle stays
+   display: none and none of the rail's JS runs at all. A genuinely
+   different idea for the captain to compare live, not a variant of the
+   shipped page - a boxed channel-strip module fixed to the right edge of
+   wide viewports (label, fader travel with tick marks, a live numeric
+   readout) whose fader cap tracks scroll position, giving the whole page
+   one continuous thread instead of section-by-section reveals. Toggled at
+   runtime by #experimental-toggle (js/main.js), state kept in localStorage
+   only so it survives a reload during review. To remove entirely: delete
+   this section, the elements at the end of index.html's <body>, and the
+   matching block in js/main.js.
    ========================================================================== */
 
 .experimental-toggle {
+  display: none;
   position: fixed;
   left: var(--space-4);
   /* Bottom-left collides with the mobile sticky total bar while the
@@ -1769,6 +1774,10 @@ select {
   cursor: pointer;
   transition: transform 0.12s var(--ease-out), background-color 0.15s var(--ease-out),
     color 0.15s var(--ease-out);
+}
+
+html.experimental-review .experimental-toggle {
+  display: block;
 }
 
 .experimental-toggle:active {

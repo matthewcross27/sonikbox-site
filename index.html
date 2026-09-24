@@ -335,9 +335,11 @@
   </footer>
 
   <!-- ============== EXPERIMENTAL: temporary, switchable, removable ==============
-       Off by default and never affects the page above. See the matching
+       Review-only: never renders for a real visitor. Only activates when the
+       page is loaded with ?console=1 in the URL - see the matching
        "EXPERIMENTAL" section in css/styles.css and js/main.js for what this
-       is and how to remove all three pieces together. -->
+       is, how the flag gate works, and how to remove all three pieces
+       together once the captain decides to adopt or drop it. -->
   <button type="button" id="experimental-toggle" class="experimental-toggle" aria-pressed="false">Experimental: Console Rail</button>
   <div class="console-rail" id="console-rail" aria-hidden="true">
     <div class="console-rail-label">Scroll</div>

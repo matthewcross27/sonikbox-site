@@ -342,16 +342,30 @@
   }
 
   // ---------------------------------------------------------------------
-  // EXPERIMENTAL: Console Scroll rail — off by default, never touches the
-  // page above unless the captain switches it on. State lives only in
-  // localStorage so a reload during review keeps it on. To remove this
-  // idea entirely: delete this block, the matching CSS section, and the
-  // two elements at the end of index.html's <body>.
+  // EXPERIMENTAL: Console Scroll rail, review-only. Hidden from every real
+  // visitor - this whole block, including the toggle's click wiring, only
+  // runs when the page is loaded with ?console=1 in the URL. Without that
+  // flag none of this executes and .experimental-toggle stays display: none
+  // (see the matching EXPERIMENTAL block in css/styles.css). State lives
+  // only in localStorage so a reload during review keeps it on. To remove
+  // this idea entirely: delete this block, the matching CSS section, and
+  // the two elements at the end of index.html's <body>.
   // ---------------------------------------------------------------------
-  var experimentalToggle = document.getElementById("experimental-toggle");
-  var consoleRailIndicator = document.getElementById("console-rail-indicator");
-  var consoleRailTrack = document.querySelector(".console-rail-track");
-  var consoleRailReadout = document.getElementById("console-rail-readout");
+  var consoleRailFlagEnabled = false;
+  try {
+    consoleRailFlagEnabled = new URLSearchParams(window.location.search).get("console") === "1";
+  } catch (e) {
+    consoleRailFlagEnabled = false;
+  }
+
+  if (consoleRailFlagEnabled) {
+    document.documentElement.classList.add("experimental-review");
+  }
+
+  var experimentalToggle = consoleRailFlagEnabled ? document.getElementById("experimental-toggle") : null;
+  var consoleRailIndicator = consoleRailFlagEnabled ? document.getElementById("console-rail-indicator") : null;
+  var consoleRailTrack = consoleRailFlagEnabled ? document.querySelector(".console-rail-track") : null;
+  var consoleRailReadout = consoleRailFlagEnabled ? document.getElementById("console-rail-readout") : null;
   var CONSOLE_RAIL_STORAGE_KEY = "sonikbox-experimental-console-rail";
   var consoleRailScrollHandler = null;
   var consoleRailResizeHandler = null;
