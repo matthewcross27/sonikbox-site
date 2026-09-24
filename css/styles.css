@@ -1741,13 +1741,14 @@ select {
 /* ==========================================================================
    EXPERIMENTAL — Console Scroll rail. Off by default; never affects the
    default view. A genuinely different idea for the captain to compare live,
-   not a variant of the shipped page - a thin fader-style rail down the right
-   edge of wide viewports that tracks scroll position the way a channel strip
-   tracks a fader, giving the whole page one continuous thread instead of
-   section-by-section reveals. Toggled at runtime by #experimental-toggle
-   (js/main.js), state kept in localStorage only so it survives a reload
-   during review. To remove entirely: delete this section, the two elements
-   at the end of index.html's <body>, and the matching block in js/main.js.
+   not a variant of the shipped page - a boxed channel-strip module fixed to
+   the right edge of wide viewports (label, fader travel with tick marks, a
+   live numeric readout) whose fader cap tracks scroll position, giving the
+   whole page one continuous thread instead of section-by-section reveals.
+   Toggled at runtime by #experimental-toggle (js/main.js), state kept in
+   localStorage only so it survives a reload during review. To remove
+   entirely: delete this section, the elements at the end of index.html's
+   <body>, and the matching block in js/main.js.
    ========================================================================== */
 
 .experimental-toggle {
@@ -1783,41 +1784,89 @@ select {
   display: none;
 }
 
+/* A real channel-strip module (panel background, border, label, readout),
+   not a hairline someone could scroll past without registering it changed.
+   The fader cap reuses input[type=range]'s exact thumb dimensions/colours
+   on purpose - a visitor has already seen this shape in the rate builder. */
 html.console-rail-on .console-rail {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 40px;
+  top: var(--space-16);
+  bottom: var(--space-16);
+  right: var(--space-4);
+  width: 56px;
   z-index: 499;
   pointer-events: none;
+  background-color: var(--panel);
+  border: 1px solid var(--border);
+  padding: var(--space-4) 0;
+}
+
+.console-rail-label {
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: var(--space-4);
 }
 
 .console-rail-track {
+  position: relative;
+  flex: 1;
+  width: 4px;
+  background: var(--border-dim);
+}
+
+/* Rack-ruler ticks every 10% of travel, drawn wider than the 4px rail
+   itself so they read as ticks rather than lengthening the line. */
+.console-rail-track::before {
+  content: "";
   position: absolute;
-  top: var(--space-16);
-  bottom: var(--space-16);
-  left: 50%;
-  width: 2px;
-  transform: translateX(-50%);
-  background: var(--border);
+  top: 0;
+  bottom: 0;
+  left: -10px;
+  right: -10px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--border) 0,
+    var(--border) 1px,
+    transparent 1px,
+    transparent 10%
+  );
 }
 
 .console-rail-indicator {
   position: absolute;
   left: 50%;
   top: 0;
-  width: 14px;
-  height: 14px;
-  margin-left: -7px;
+  width: 16px;
+  height: 22px;
+  margin-left: -8px;
   background: var(--orange);
-  box-shadow: 0 0 6px 1px rgba(255, 85, 0, 0.7);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 6px 1px rgba(255, 85, 0, 0.5);
 }
 
-/* Below this width the rail would sit over content or collide with the
-   mobile total bar - it only belongs where there's clear margin for it. */
-@media (max-width: 1279px) {
+.console-rail-readout {
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--fs-label);
+  color: var(--text);
+  min-width: 3ch;
+  text-align: center;
+}
+
+/* The container reaches full viewport width up to 1280px with only a 32px
+   inner gutter, so a 56px panel needs real margin outside the container to
+   avoid sitting on top of real content - that margin only exists from
+   1440px up, which is also a required verification width. */
+@media (max-width: 1439px) {
   html.console-rail-on .console-rail {
     display: none;
   }

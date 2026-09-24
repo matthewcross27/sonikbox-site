@@ -351,6 +351,7 @@
   var experimentalToggle = document.getElementById("experimental-toggle");
   var consoleRailIndicator = document.getElementById("console-rail-indicator");
   var consoleRailTrack = document.querySelector(".console-rail-track");
+  var consoleRailReadout = document.getElementById("console-rail-readout");
   var CONSOLE_RAIL_STORAGE_KEY = "sonikbox-experimental-console-rail";
   var consoleRailScrollHandler = null;
   var consoleRailResizeHandler = null;
@@ -362,6 +363,9 @@
     var progress = scrollable > 0 ? window.scrollY / scrollable : 0;
     progress = Math.min(Math.max(progress, 0), 1);
     consoleRailIndicator.style.transform = "translateY(" + (progress * travelRange) + "px)";
+    if (consoleRailReadout) {
+      consoleRailReadout.textContent = Math.round(progress * 100) + "%";
+    }
   }
 
   function enableConsoleRail() {
