@@ -4,28 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script>
-    // Three designs are live for client review: this page (Design A),
-    // version-b.html (Design B), and version-c.html (Design C). ?v=b/?v=c or
-    // a remembered choice sends a visitor straight to that design; everyone
-    // else lands here, unchanged. Kept as a synchronous inline script at the
-    // very top of <head> so a redirect fires before anything renders. See
-    // the .version-switch note further down for the visible toggle, and the
-    // other two pages for their mirrors of this script.
+    // Mirror of index.html's redirect script for a three-way switch. An
+    // explicit ?v=a or ?v=b, or no stored preference at all conflicting with
+    // this page, sends a visitor to that other design. Landing here any
+    // other way (direct link, ?v=c, a remembered "c" choice) just claims the
+    // "c" preference and renders this page.
     (function () {
       var params = new URLSearchParams(location.search);
-      var choice = params.get("v") || localStorage.getItem("sonikbox-version") || "a";
-      if (choice === "b") {
-        location.replace("version-b.html");
+      var v = params.get("v");
+      if (v === "a") {
+        location.replace("index.html?v=a");
         return;
       }
-      if (choice === "c") {
-        location.replace("version-c.html");
+      if (v === "b") {
+        location.replace("version-b.html?v=b");
         return;
       }
-      localStorage.setItem("sonikbox-version", "a");
+      localStorage.setItem("sonikbox-version", "c");
     })();
   </script>
-  <title>SonikBox | Mobile Recording Studio in Los Angeles &amp; San Diego</title>
+  <title>SonikBox | Mobile Recording Studio in Los Angeles &amp; San Diego (Design C)</title>
   <meta name="description" content="We drive a fully decoupled float-room studio to your door in LA or San Diego, with Neve preamps and Neumann mics. Price a session and book by email." />
 
   <meta property="og:type" content="website" />
@@ -42,37 +40,34 @@
   <meta name="twitter:description" content="The whole studio, parked outside your door. Two identical mobile rigs across LA and San Diego." />
   <meta name="twitter:image" content="https://www.sonikbox.studio/assets/img/control-room.jpg" />
 
-  <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#08080a" />
-
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles-c.css" />
 </head>
 <body>
 
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <!-- ===================== DESIGN PREVIEW TOGGLE ===================== -->
-  <!-- Three live designs for client review. Remove this whole block (and its
-       .version-switch rules at the bottom of css/styles.css) once the
-       captain has picked one; the other two pages and their stylesheets can
-       then be deleted too. -->
+  <!-- Three live designs for client review. Remove this whole block (and
+       its .version-switch rules at the bottom of css/styles-c.css) once the
+       captain has picked one; this file and css/styles-c.css can then be
+       deleted too. -->
   <div class="version-switch" role="note" aria-label="Design preview">
     <span class="version-switch-label">Which look do you prefer?</span>
-    <span class="version-switch-option is-current" aria-current="page">Design A <span class="version-switch-note">(viewing now)</span></span>
+    <a class="version-switch-option" href="index.html?v=a">View Design A</a>
     <a class="version-switch-option" href="version-b.html?v=b">View Design B</a>
-    <a class="version-switch-option" href="version-c.html?v=c">View Design C</a>
+    <span class="version-switch-option is-current" aria-current="page">Design C <span class="version-switch-note">(viewing now)</span></span>
   </div>
 
   <!-- ===================== NAV ===================== -->
   <header class="site-nav">
     <div class="container">
-      <a class="logo" href="#top"><span class="logo-mark" aria-hidden="true"></span><span class="logo-word"><span class="white">SONIK</span><span class="orange">BOX</span></span></a>
+      <a class="logo" href="#top"><span class="white">SONIK</span><span class="orange">BOX</span></a>
 
       <nav aria-label="Primary">
         <ul class="nav-links">
@@ -121,7 +116,7 @@
           </p>
 
           <div class="hero-actions">
-            <a class="btn btn-primary" id="hero-book-btn" href="#"><svg class="btn-icon" viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M0 0v12l10-6z" fill="currentColor"/></svg>Book This Rig</a>
+            <a class="btn btn-primary" id="hero-book-btn" href="#">▶ Book This Rig</a>
             <a class="btn btn-secondary" href="#specs">Browse the Mic Locker</a>
           </div>
           <a class="cta-address" href="mailto:book@sonikbox.studio">No mail app? Email book@sonikbox.studio</a>
@@ -146,7 +141,7 @@
     <!-- ===================== HUBS ===================== -->
     <section class="section" id="hubs" aria-labelledby="hubs-heading">
       <div class="container hubs-grid">
-        <div class="hubs-copy reveal">
+        <div class="hubs-copy">
           <div class="eyebrow">// The Lounge</div>
           <h2 id="hubs-heading">Room to Sit Between Takes</h2>
           <p>You sit on custom-stitched leather against back-lit acoustic paneling, under RGB lighting zones you set to the color temperature you want.</p>
@@ -163,7 +158,7 @@
           </div>
         </div>
 
-        <div class="hub-photo-frame reveal">
+        <div class="hub-photo-frame">
           <img src="assets/img/lounge.jpg" alt="SonikBox leather lounge seating against backlit damask-patterned acoustic wall panels." width="1200" height="1600" loading="lazy" />
         </div>
       </div>
@@ -172,19 +167,19 @@
     <!-- ===================== SPECS ===================== -->
     <section class="section" id="specs" aria-labelledby="specs-heading">
       <div class="container">
-        <p class="print-only print-title">SonikBox Studio Rider</p>
-        <p class="print-only print-subtitle">The same gear in both mobile hubs.</p>
-
-        <div class="section-head-row reveal">
+        <div class="section-head-row">
           <div class="section-head">
             <div class="eyebrow">// Signal Chain Manifest</div>
             <h2 id="specs-heading">The Gear In Both Vehicles</h2>
             <p>Both vehicles carry the same gear, so you get the same signal chain whichever hub takes the job.</p>
           </div>
-          <button class="btn btn-secondary no-print" id="print-rider-btn" type="button"><svg class="btn-icon" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M3.5 0h7v3.5h-7zM1 4.5h12v5.5h-2.5V7h-7v3H1zM4.5 8h5v6h-5z" fill="currentColor"/></svg>Print Studio Rider</button>
+          <button class="btn btn-secondary no-print" id="print-rider-btn" type="button">⎙ Print Studio Rider</button>
         </div>
 
-        <div class="module-grid reveal">
+        <p class="print-only" style="font-family: Georgia, serif; font-size: 22px; font-weight: bold;">SonikBox Studio Rider</p>
+        <p class="print-only print-subtitle">The same gear in both mobile hubs.</p>
+
+        <div class="module-grid">
           <div class="module-card rack-panel">
             <div class="module-card-head">
               <h3>Module 01 - Monitoring &amp; Room Tuning</h3>
@@ -269,13 +264,13 @@
     <!-- ===================== ESTIMATOR ===================== -->
     <section class="section" id="estimator" aria-labelledby="estimator-heading">
       <div class="container">
-        <div class="section-head reveal">
+        <div class="section-head">
           <div class="eyebrow">// Session Rate Builder</div>
           <h2 id="estimator-heading">Price Your Session</h2>
           <p>Pick your hub, set the hours and add-ons, and send us the estimate when it looks right.</p>
         </div>
 
-        <div class="estimator-panel rack-panel reveal">
+        <div class="estimator-panel rack-panel">
           <div class="estimator-grid">
             <form id="estimator-form">
               <div class="field-group">
@@ -323,14 +318,12 @@
 
             <aside class="summary-panel rack-panel" aria-labelledby="summary-heading">
               <div class="summary-title" id="summary-heading"><span class="led"></span>Session Breakdown</div>
-              <div class="summary-figures" aria-live="polite">
               <div class="summary-line"><span>Base rate</span><span id="summary-base">$600</span></div>
               <div class="summary-line"><span>Travel fee</span><span id="summary-travel">$0</span></div>
               <div class="summary-line"><span>Add-ons</span><span id="summary-addons">$0</span></div>
               <div class="summary-total">
                 <span class="label">Total Session Estimate</span>
                 <span class="value" id="summary-total">$600</span>
-              </div>
               </div>
               <button class="btn btn-primary btn-block estimator-submit" id="estimator-submit" type="button">Request This Session</button>
             </aside>
@@ -347,11 +340,11 @@
     <!-- ===================== CTA BAND ===================== -->
     <section class="cta-band" aria-labelledby="cta-heading">
       <div class="container">
-        <div class="cta-module rack-panel reveal">
+        <div class="cta-module rack-panel">
           <div class="eyebrow"><span class="led"></span>Status: Ready</div>
           <h2 id="cta-heading">Ready to Track?</h2>
           <p>Tell us your hub and your date. We'll come back inside one business day with gear, crew and arrival time.</p>
-          <a class="btn btn-primary" id="cta-book-btn" href="#"><svg class="btn-icon" viewBox="0 0 10 12" aria-hidden="true" focusable="false"><path d="M0 0v12l10-6z" fill="currentColor"/></svg>Email Us to Book</a>
+          <a class="btn btn-primary" id="cta-book-btn" href="#">▶ Email Us to Book</a>
           <a class="cta-address" href="mailto:book@sonikbox.studio">book@sonikbox.studio</a>
         </div>
       </div>

@@ -4,18 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script>
-    // Mirror of index.html's redirect script: an explicit ?v=a, or no stored
-    // preference at all conflicting with this page, sends a visitor back to
-    // Design A. Landing here any other way (direct link, ?v=b, a remembered
-    // "b" choice) just claims the "b" preference and renders this page.
+    // Mirror of index.html's redirect script: an explicit ?v=a or ?v=c, or no
+    // stored preference at all conflicting with this page, sends a visitor
+    // to that other design. Landing here any other way (direct link, ?v=b, a
+    // remembered "b" choice) just claims the "b" preference and renders this
+    // page.
     (function () {
       var params = new URLSearchParams(location.search);
-      if (params.get("v") === "a") {
-        // Carry the explicit override through: index.html's own script also
-        // reads localStorage, which still says "b" until index.html sets it
-        // itself - a bare "index.html" redirect would land there, read the
-        // stale "b", and bounce straight back here.
-        location.replace("index.html?v=a");
+      var v = params.get("v");
+      if (v === "a" || v === "c") {
+        // Carry the explicit override through: the target page's own script
+        // also reads localStorage, which still says "b" until it sets it
+        // itself - a bare redirect would land there, read the stale "b", and
+        // bounce straight back here.
+        location.replace((v === "a" ? "index.html" : "version-c.html") + "?v=" + v);
         return;
       }
       localStorage.setItem("sonikbox-version", "b");
@@ -54,7 +56,7 @@
   <a class="skip-link" href="#main">Skip to main content</a>
 
   <!-- ===================== DESIGN PREVIEW TOGGLE ===================== -->
-  <!-- Two live designs for client review. Remove this whole block (and its
+  <!-- Three live designs for client review. Remove this whole block (and its
        .version-switch rules at the bottom of css/styles-b.css) once the
        captain has picked one; this file and css/styles-b.css can then be
        deleted too. -->
@@ -62,6 +64,7 @@
     <span class="version-switch-label">Which look do you prefer?</span>
     <a class="version-switch-option" href="index.html?v=a">View Design A</a>
     <span class="version-switch-option is-current" aria-current="page">Design B <span class="version-switch-note">(viewing now)</span></span>
+    <a class="version-switch-option" href="version-c.html?v=c">View Design C</a>
   </div>
 
   <!-- ===================== NAV ===================== -->
