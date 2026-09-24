@@ -18,6 +18,10 @@
     navToggle.setAttribute("aria-expanded", "false");
   }
 
+  function navIsOpen() {
+    return navPanel.classList.contains("is-open");
+  }
+
   navToggle.addEventListener("click", function () {
     var isOpen = navPanel.classList.toggle("is-open");
     navToggle.setAttribute("aria-expanded", String(isOpen));
@@ -30,13 +34,14 @@
   });
 
   document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape") {
+    if (event.key === "Escape" && navIsOpen()) {
       closeNav();
+      navToggle.focus();
     }
   });
 
   window.addEventListener("resize", function () {
-    if (window.innerWidth >= 768) {
+    if (window.innerWidth >= 768 && navIsOpen()) {
       closeNav();
     }
   });
@@ -88,14 +93,14 @@
 
   var RADIUS_OPTIONS = {
     la: [
-      { value: "0", fee: 0, label: "Metro LA & Hollywood — Within 15 mi (Free)" },
-      { value: "150", fee: 150, label: "Greater LA County / Valley — 15–40 mi (+$150 Travel Fee)" },
-      { value: "300", fee: 300, label: "Out-of-Bounds — Malibu, Desert, Ventura (+$300 Travel Fee)" }
+      { value: "0", fee: 0, label: "Metro LA & Hollywood - Within 15 mi (Free)" },
+      { value: "150", fee: 150, label: "Greater LA County / Valley - 15–40 mi (+$150 Travel Fee)" },
+      { value: "300", fee: 300, label: "Out-of-Bounds - Malibu, Desert, Ventura (+$300 Travel Fee)" }
     ],
     sd: [
-      { value: "0", fee: 0, label: "Downtown, Gaslamp & Mission Valley — Within 15 mi (Free)" },
-      { value: "150", fee: 150, label: "North County / Oceanside / East County — 15–40 mi (+$150 Travel Fee)" },
-      { value: "300", fee: 300, label: "Extended Tracks — Temecula, Imperial Valley (+$300 Travel Fee)" }
+      { value: "0", fee: 0, label: "Downtown, Gaslamp & Mission Valley - Within 15 mi (Free)" },
+      { value: "150", fee: 150, label: "North County / Oceanside / East County - 15–40 mi (+$150 Travel Fee)" },
+      { value: "300", fee: 300, label: "Extended Tracks - Temecula, Imperial Valley (+$300 Travel Fee)" }
     ]
   };
 
@@ -133,7 +138,7 @@
       name.className = "addon-name";
       name.textContent = addon.name;
       text.appendChild(name);
-      text.appendChild(document.createTextNode(" — " + addon.priceCopy));
+      text.appendChild(document.createTextNode(" - " + addon.priceCopy));
 
       label.appendChild(input);
       label.appendChild(text);
@@ -179,9 +184,17 @@
     return opt.label;
   }
 
+  function updateRangeFill() {
+    var min = Number(hoursRange.min);
+    var max = Number(hoursRange.max);
+    var pct = max > min ? ((Number(hoursRange.value) - min) / (max - min)) * 100 : 0;
+    hoursRange.style.setProperty("--range-fill", pct + "%");
+  }
+
   function recalculate() {
     var hours = parseInt(hoursRange.value, 10);
     hoursValue.textContent = hours + " hrs";
+    updateRangeFill();
 
     var base = hours * HOURLY_RATE;
     var travel = currentRadiusFee();
@@ -232,11 +245,11 @@
 
   estimatorSubmit.addEventListener("click", function () {
     var quote = recalculate();
-    var subject = "Session Inquiry — Studio Lockout Request";
+    var subject = "Session Request";
     var bodyLines = [
       "Hub: " + currentHubLabel(),
       "Tracking hours: " + quote.hours + " hrs",
-      "Location radius: " + currentRadiusLabel(),
+      "Distance from hub: " + currentRadiusLabel(),
       "Add-ons: " + (quote.addonLabels.length ? quote.addonLabels.join(", ") : "None"),
       "Estimated total: " + money(quote.total),
       "",
@@ -269,4 +282,62 @@
   printBtn.addEventListener("click", function () {
     window.print();
   });
+
+  // ---------------------------------------------------------------------
+  // Scroll reveal — a handful of section-level entrances (never per-card),
+  // gated on both feature support and prefers-reduced-motion. css/styles.css
+  // only ever hides a .reveal element once <html> carries .js-reveal, so a
+  // browser that lands in neither branch below leaves every .reveal element
+  // fully visible instead of stuck invisible.
+  // ---------------------------------------------------------------------
+  var prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!prefersReducedMotion && "IntersectionObserver" in window) {
+    document.documentElement.classList.add("js-reveal");
+
+    var revealObserver = new IntersectionObserver(
+      function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-revealed");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0, rootMargin: "0px 0px -10% 0px" }
+    );
+
+    document.querySelectorAll(".reveal").forEach(function (target) {
+      revealObserver.observe(target);
+    });
+  }
+
+  // ---------------------------------------------------------------------
+  // Hero photo tilt — the one "alive" signature. Fine-pointer, hover-capable
+  // devices only, and skipped outright under reduced motion.
+  // ---------------------------------------------------------------------
+  var heroPhotoFrame = document.querySelector(".hero-photo-frame");
+  var canHoverFine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  if (heroPhotoFrame && !prefersReducedMotion && canHoverFine) {
+    var MAX_TILT_DEG = 6;
+
+    function setTilt(rotateXDeg, rotateYDeg) {
+      // Written straight to transform (not a custom property) so this
+      // recalculates only heroPhotoFrame itself, not a subtree.
+      heroPhotoFrame.style.transform =
+        "perspective(900px) rotateX(" + rotateXDeg + "deg) rotateY(" + rotateYDeg + "deg)";
+    }
+
+    heroPhotoFrame.addEventListener("mousemove", function (event) {
+      var rect = heroPhotoFrame.getBoundingClientRect();
+      var px = (event.clientX - rect.left) / rect.width - 0.5;
+      var py = (event.clientY - rect.top) / rect.height - 0.5;
+      setTilt(py * -MAX_TILT_DEG * 2, px * MAX_TILT_DEG * 2);
+    });
+
+    heroPhotoFrame.addEventListener("mouseleave", function () {
+      setTilt(0, 0);
+    });
+  }
 })();
