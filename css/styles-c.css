@@ -837,8 +837,18 @@ input[type="range"] {
   flex: 1;
   appearance: none;
   height: 4px;
-  background: var(--border);
+  background: linear-gradient(to right, var(--orange) var(--range-fill, 0%), var(--border) var(--range-fill, 0%));
   outline: none;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: var(--border);
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 4px;
+  background: var(--orange);
 }
 
 input[type="range"]::-webkit-slider-thumb {
